@@ -89,5 +89,15 @@ Route::get('/Magasin/stock', [MaterielsController::class, 'stock'])->name('stock
 Route::get('/Magasin/etat_stock', [MaterielsController::class, 'etatStock'])->name('etatStock');
 
  
+/**
+ * 
+ * Ressources Hummaine
+ * 
+ * */ 
+
+Route::get('/Rh/listePersonnel', [PersonnelController::class, 'listePersonnel'])->name('personnel.liste');
+Route::get('/Rh/payementPersonnel', [PersonnelController::class, 'payementPersonnel'])->name('personnel.payement');
+
+
 
 

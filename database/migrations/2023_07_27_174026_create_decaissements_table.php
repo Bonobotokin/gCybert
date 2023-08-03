@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->foreignIdFor(Materiels::class)->nullable()->constrained();
+            $table->integer('quantite')->default(0);
             $table->double('montant',10,2)->default(0.00);
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();

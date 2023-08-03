@@ -268,6 +268,12 @@
             Stock.setAttribute('class', 'active');
             Magasin.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
         }
+        else if (currentUrl == "Rh") {
+            var ressources = document.getElementById("Ressources");
+            var rh = document.getElementById("RH");
+            ressources.setAttribute('class', 'active');
+            rh.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
+        }
     };
 
     </script>

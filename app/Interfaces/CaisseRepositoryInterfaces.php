@@ -12,5 +12,7 @@ interface CaisseRepositoryInterfaces
 
     public function getCaisse();
 
+    public function getSumCaiss();
+
     public function lookResteClient(string $client);
 }

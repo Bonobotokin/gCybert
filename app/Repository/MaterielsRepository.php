@@ -54,15 +54,15 @@ class MaterielsRepository implements MaterielsRepositoryInterfaces
     public function etatStock()
     {
         
-        $data = EtatStockMateriels::with(['stockMateriels','encaissement'])
+        $data = EtatStockMateriels::with(['stockMateriels','encaissement','encaissement.facture'])
                 ->get()
                 ->map(function($data) {
-                    // dd();
+                    // dd($data->encaissement);
                     return [
                         'code' => $data->id,
                         'designation' => $data->stockMateriels->materiels->designation,
                         'conditionnement' => $data->stockMateriels->materiels->conditionnement,
-                        'quantite' => $data->encaissement->quantite,
+                        'quantite' => $data->quantite,
                         'observation' => $data->observation
                     ];
                 });

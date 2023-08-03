@@ -43,6 +43,7 @@
                     <tr>
                         <th>Nnumero</th>
                         <th> Type </th>
+                        <th> facture </th>
                         <th> Montant </th>
                         <th> Date </th>
                         <th class="text-center"> Action </th>
@@ -54,6 +55,7 @@
                     <tr>
                         <td> {{ $data['numero'] }} </td>
                         <td> {{ $data['type'] }} </td>
+                        <td> {{ $data['nume_facture'] }} </td>
                         <td> {{ $data['montant'] }} </td>
                         <td> {{ $data['date'] }} </td>
                     </tr>

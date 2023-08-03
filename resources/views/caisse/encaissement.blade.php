@@ -10,6 +10,7 @@
         <div class="data-table-list">
             <div class="basic-tb-hd">
                 <h2>Liste de encaissement</h2>
+
             </div>
             <div class="btn-list">
                 <div class="row">
@@ -42,7 +43,6 @@
                             <th> Description </th>
                             <th> Montant </th>
                             <th> reste </th>
-                            <th> Client </th>
                             <th> creer </th>
                             <th> Date </th>
                             <th> Etat </th>
@@ -57,7 +57,6 @@
                             <td> {{$data['description']}}</td>
                             <td>{{$data['montant']}} Ar</td>
                             <td>{{$data['reste']}} Ar</td>
-                            <td>{{$data['client']}} </td>
                             <td>Creer par {{$data['personnel']}}</td>
                             <td>{{$data['date']}}</td>
                             <td class="material-design-btn">
@@ -66,12 +65,17 @@
                                 @elseif ($data['etat'] == 1)
                                 <button class="btn notika-btn-red waves-effect">Non payer</button>
                                 @elseif ($data['etat'] == 2)
-                                <button class="btn notika-btn-purple waves-effect">Payer avec reste</button>
+                                <button class="btn notika-btn-purple waves-effect">Reste non payer</button>
                                 @elseif ($data['etat'] == 3)
+                                <button class="btn notika-btn-lightgreen waves-effect">Payer mais avec reste</button>
+                                @elseif ($data['etat'] == 4)
                                 <button class="btn notika-btn-lightgreen waves-effect">Payer</button>
                                 @endif
                             </td>
-                            <td></td>
+                            <td class="material-design-btn">
+
+                                <button class="btn notika-btn-purple waves-effect">Details</button>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -115,27 +119,6 @@
 
 
 <script>
-    window.onload = () => {
-        var currentUrl = window.location.href.split('/')[3]
-        console.log(currentUrl);
-        if (currentUrl == "home") {
-            var homes = document.getElementById("homes");
-            var Home = document.getElementById("Home");
-            homes.setAttribute('class', 'active');
-            Home.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        } else if (currentUrl == "caisse") {
-            var Caisses = document.getElementById("Caisses");
-            var Caisse = document.getElementById("Caisse");
-            Caisses.setAttribute('class', 'active');
-            Caisse.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        } else if (currentUrl == "parametres") {
-            var Settings = document.getElementById("Settings");
-            var Parametres = document.getElementById("Parametres");
-            Settings.setAttribute('class', 'active');
-            Parametres.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        }
-    };
-
     function getEmail() {
         var pseudo = document.getElementById("pseudo");
         var email = document.getElementById("email");

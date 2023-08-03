@@ -7,6 +7,8 @@
                     </li>
                     <li id="Caisses"><a data-toggle="tab" href="#Caisse"><i class="notika-icon notika-edit"></i>Caisse</a>
                     </li>
+                    <li id="Ressources"><a data-toggle="tab" href="#RH"><i class="notika-icon notika-support"></i>Ressources hummaine</a>
+                    </li>
                     <li id="Stock"><a data-toggle="tab" href="#Magasin"><i class="notika-icon notika-edit"></i>Magasin</a>
                     </li>
                     <li id="Settings"><a data-toggle="tab" href="#Parametres"><i class="notika-icon notika-settings"></i> Parametres</a>
@@ -23,6 +25,14 @@
                             <li><a href="{{route('decaissement')}}">Decaissement</a>
                             </li>
                             <li><a href="{{route('livreCaisse')}}">Livres de caisse</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="RH" class="tab-pane notika-tab-menu-bg animated flipInX">
+                        <ul class="notika-main-menu-dropdown">
+                            <li><a href="{{route('personnel.liste')}}">Personnel</a>
+                            </li>
+                            <li><a href=" {{ route('personnel.payement')}}"> Payement </a>
                             </li>
                         </ul>
                     </div>

@@ -173,27 +173,6 @@
 
 
 <script>
-    window.onload = () => {
-        var currentUrl = window.location.href.split('/')[3]
-        console.log(currentUrl);
-        if (currentUrl == "home") {
-            var homes = document.getElementById("homes");
-            var Home = document.getElementById("Home");
-            homes.setAttribute('class', 'active');
-            Home.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        } else if (currentUrl == "caisse") {
-            var Caisses = document.getElementById("Caisses");
-            var Caisse = document.getElementById("Caisse");
-            Caisses.setAttribute('class', 'active');
-            Caisse.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        } else if (currentUrl == "parametres") {
-            var Settings = document.getElementById("Settings");
-            var Parametres = document.getElementById("Parametres");
-            Settings.setAttribute('class', 'active');
-            Parametres.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        }
-    };
-
     function getEmail() {
         var pseudo = document.getElementById("pseudo");
         var email = document.getElementById("email");

@@ -71,7 +71,7 @@ return [
     */
 
     // 'timezone' => 'UTC',
-    'Indian/Antananarivo',
+    'timezone' => 'Indian/Antananarivo',
 
     /*
     |--------------------------------------------------------------------------

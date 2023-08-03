@@ -67,15 +67,25 @@ class CaisseRepository implements CaisseRepositoryInterfaces
     }
 
 
+    public function getSumCaiss()
+    {
+        $caisse = Caisse::sum('solde');
+
+        return $caisse;
+    }
+
+
     public function getCaisse()
     {
         $livre = Caisse::with(['encaissement', 'decaissement'])
                 ->get()
                 ->map(function($livre) {
                     $date = Carbon::parse($livre->created_at)->format('m/d/Y');
+                    // dd($livre->encaissement->description);
                     return [
                         'numero' => $livre->id,
-                        'type' => is_null($livre->encaissement) ? "Decaissement" : "Encaissement",
+                        'nume_facture' => is_null($livre->encaissement) ? "Decaissement" : $livre->encaissement->facture_id,
+                        'type' => is_null($livre->encaissement) ? "Decaissement" : $livre->encaissement->description,
                         'montant' => $livre->solde,
                         'date' => is_null($livre) ? " " : $date
 

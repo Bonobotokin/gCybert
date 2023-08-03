@@ -25,7 +25,7 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
                     'personnel' => $data->user->name,
                     'date' => $date,
                     'salarier' => is_null($data->personnel) ? " " : $data->personnel->nom,
-                    'client' => $data->client,
+                    // 'client' => $data->client,
                 ];
             });
 
@@ -82,7 +82,10 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
     {
         $aujourdhuit =  Carbon::today();
         // $recette = Encaissement::where('date', $aujourdhuit)->where('description', '!=', 'default')->sum('montant');
-        $credit = Encaissement::where('date', $aujourdhuit)->where('ispayed', 2)->sum('montant');
+        $montReste = Encaissement::where('date', $aujourdhuit)->where('ispayed', 2)->sum('montant');
+        $montNotpayed = Encaissement::where('date', $aujourdhuit)->where('ispayed', 1)->sum('montant');
+        $montDebut = Encaissement::where('date', $aujourdhuit)->where('ispayed', 0)->sum('montant');
+        $credit = $montNotpayed + $montReste + $montDebut;
         return $credit;
     }
 
@@ -95,8 +98,10 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
 
     public function getAllSumReste()
     {
-        $credit = Encaissement::where('ispayed', 2)->sum('montant');
-
+        $montReste = Encaissement::where('ispayed', 2)->sum('montant');
+        $montNotpayed = Encaissement::where('ispayed', 1)->sum('montant');
+        $montDebut = Encaissement::where('ispayed', 0)->sum('montant');
+        $credit = $montNotpayed + $montReste + $montDebut;
         return $credit;
         
     }

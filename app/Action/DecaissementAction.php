@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 namespace App\Action;
@@ -9,14 +9,13 @@ use App\Repository\CaisseRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class DecaissementAction 
+class DecaissementAction
 {
     private $caisseRepository;
 
     public function __construct(
         CaisseRepository $caisseRepository
-    )
-    {
+    ) {
         $this->caisseRepository = $caisseRepository;
     }
 
@@ -27,38 +26,48 @@ class DecaissementAction
 
                 $userConnected = Auth::user()->id;
 
-                
-
-                $decaissement = Decaissement::create([
-                    'description' => $request->description,
-                    'quantite'  => $request->quantite,
-                    'montant'  => $request->montant,
-                    'user_id' => $userConnected
-                ]);
-
-                $solde = $this->caisseRepository->getSolde();
-                
-
-                $caisse = Caisse::create([
-                    'decaissement_id' => $decaissement->id,
-                    'solde' => (double) $decaissement->montant
-                ]);
-
-                return [
-                    'data' => true,
-                    'message' => "Votre demande est enregistrer"
-                ];
 
 
+
+
+
+                $sumCaisse = $this->caisseRepository->getSumCaiss();
+
+                if ($request->montant > $sumCaisse) {
+
+                    return [
+                        'data' => null,
+                        'message' => 'Votre Caisse ne peut pas accepter ce demande'
+                    ];
+                } else {
+
+                    $solde = $this->caisseRepository->getSolde();
+
+                    $decaissement = Decaissement::create([
+                        'description' => $request->description,
+                        'quantite'  => $request->quantite,
+                        'materiels_id' => $request->materiels,
+                        'montant'  => $request->montant,
+                        'user_id' => $userConnected
+                    ]);
+
+                    $caisse = Caisse::create([
+                        'decaissement_id' => $decaissement->id,
+                        'solde' => - (float) $decaissement->montant
+                    ]);
+
+                    // dd($caisse);
+
+                    return [
+                        'data' => true,
+                        'message' => "Votre demande est enregistrer"
+                    ];
+                }
             });
 
             return $data;
-
         } catch (\Throwable $th) {
             return $th;
         }
     }
-
-    
-
 }

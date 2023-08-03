@@ -50,7 +50,6 @@
                             <th> Montant </th>
                             <th> Payer </th>
                             <th> Reste </th>
-                            <th> Client</th>
                             <th> Etat</th>
                             <th> Action</th>
                         </tr>
@@ -66,7 +65,6 @@
                             <td> {{ $data['montant'] }} Ar</td>
                             <td> {{ $data['payer'] }} Ar</td>
                             <td> {{ $data['reste'] }} Ar</td>
-                            <td> {{ $data['client'] }} </td>
                             <td class="material-design-btn">
                                 @if ($data['etat'] == " " || $data['etat'] == 0)
                                 <button class="btn notika-btn-deeporange waves-effect">Ouverture</button>
@@ -396,27 +394,6 @@
     });
 </script>
 <script>
-    window.onload = () => {
-        var currentUrl = window.location.href.split('/')[3]
-        console.log(currentUrl);
-        if (currentUrl == "home") {
-            var homes = document.getElementById("homes");
-            var Home = document.getElementById("Home");
-            homes.setAttribute('class', 'active');
-            Home.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        } else if (currentUrl == "caisse") {
-            var Caisses = document.getElementById("Caisses");
-            var Caisse = document.getElementById("Caisse");
-            Caisses.setAttribute('class', 'active');
-            Caisse.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        } else if (currentUrl == "parametres") {
-            var Settings = document.getElementById("Settings");
-            var Parametres = document.getElementById("Parametres");
-            Settings.setAttribute('class', 'active');
-            Parametres.setAttribute('class', 'tab-pane in active notika-tab-menu-bg animated flipInX');
-        }
-    };
-
     function getMontatnQuantite() {
         var quantite = document.getElementById("quantite");
         var montant = document.getElementById("montant");
