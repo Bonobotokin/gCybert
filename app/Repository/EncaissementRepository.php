@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Interfaces\EncaissementRepositoryInterfaces;
 
 use App\Models\Encaissement;
+use App\Models\facture;
 use Carbon\Carbon;
 
 class EncaissementRepository implements EncaissementRepositoryInterfaces
@@ -14,7 +15,7 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
         $data = Encaissement::with(['caisse', 'user'])
             ->get()
             ->map(function ($data) {
-                $date = Carbon::parse($data->created_at)->format('m/d/Y H:i:s');
+                $date = Carbon::parse($data->updated_at)->format('d/m/Y H:i:s');
                 // dd($data);
                 return [
                     'id' => $data->id,
@@ -36,38 +37,62 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
     {
 
         $aujourdhuit =  Carbon::today();
-        $data = Encaissement::with('facture','facture.personnel')
-            ->where('date', $aujourdhuit)
-            // ->where('ispayed', 0)
-            // ->where('description', '!=', 'default')
-            ->orderByDesc('created_at')
+
+        $data = Encaissement::where('date', $aujourdhuit)
+            ->orderByDesc('updated_at')
             ->get()
             ->map(function ($data) {
+                $date = Carbon::parse($data->updated_at)->format('d/m/Y');
+                $heure = Carbon::parse($data->updated_at)->format('H:i:s');
 
-                $date = Carbon::parse($data->created_at)->format('m/d/Y');
 
-                // dd($data);
-                
+                $facture = $this->getFacture($data->facture_id);
+
+                // Vérifier si la facture existe dans le tableau retourné par getFacture()
+                if (isset($facture[0])) {
+                    $descriptionFacture = $facture[0]['description'];
+                    $quantiteFacture = $facture[0]['quantite'];
+                    $clientFacture = $facture[0]['client'];
+                    $personnelFacture = $facture[0]['personnel']['nom'];
+                    // Vous pouvez accéder à d'autres détails de la facture de la même manière
+                } else {
+                    // La facture n'a pas été trouvée (gérer le cas où la facture n'existe pas)
+                    $descriptionFacture = " ";
+                    $quantiteFacture = " ";
+                    $clientFacture  = " ";
+                    $personnelFacture = " ";
+                    // ... d'autres valeurs par défaut ou actions que vous voulez effectuer
+                }
+
                 return [
-                    'serice' => is_null($data->facture) ? " " : $data->facture->service->designation,
-                    'description' => $data->description,
-                    // 'materiels' => is_null($data->materiels) ? " " : $data->materiels->designation,
-                    'personnel' => $data->user->name,
-                    'date' => $date,
-                    'quantite' => is_null($data->facture) ? " " : $data->facture->quantite,
-                    'montant' => $data->montant,
-                    'payer' => $data->payer,
-                    'salarier' => is_null($data->facture) ? " " : $data->facture->personnel->nom,
-                    'client' => is_null($data->facture) ? " " : $data->facture->client,
-                    'etat' => $data->ispayed,
-                    'reste' => $data->reste,
                     'numero' => $data->id,
-                    'heure' => Carbon::parse($data->created_at)->format('H:i:s')
+                    'heure' => $heure,
+                    'description' => $data->description,
+                    'quantite' => $quantiteFacture,
+                    'reste' => $data->reste,
+                    'payer' => $data->payer,
+                    'etat' => $data->ispayed,
+                    'personnel' => $data->user->name,
+                    'montant' => $data->montant,
+                    'date' => $date,
+                    'client' =>  $clientFacture ,
+                    'description' => $data->description, // Ajouter le détail de la facture ici
+                    'salarier' => $personnelFacture, // Ajouter le détail de la facture ici
+                    // ... les autres attributs que vous voulez inclure
                 ];
             });
 
         // dd($data);
         return $data;
+    }
+
+
+    static function getFacture($id)
+    {
+
+        $facture = facture::with('personnel')->whereIn('id', explode(',', $id))->get();
+
+        return $facture;
     }
 
     public function getRecetteToDay()
@@ -85,6 +110,7 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
         $montReste = Encaissement::where('date', $aujourdhuit)->where('ispayed', 2)->sum('montant');
         $montNotpayed = Encaissement::where('date', $aujourdhuit)->where('ispayed', 1)->sum('montant');
         $montDebut = Encaissement::where('date', $aujourdhuit)->where('ispayed', 0)->sum('montant');
+
         $credit = $montNotpayed + $montReste + $montDebut;
         return $credit;
     }
@@ -103,8 +129,5 @@ class EncaissementRepository implements EncaissementRepositoryInterfaces
         $montDebut = Encaissement::where('ispayed', 0)->sum('montant');
         $credit = $montNotpayed + $montReste + $montDebut;
         return $credit;
-        
     }
-
-
 }

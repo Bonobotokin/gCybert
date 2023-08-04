@@ -92,44 +92,74 @@ class PayementAction
                 $nombre = (int) $request->nombrePayement;
                 for ($i = 0; $i < $nombre; $i++) {
                     $service = $request[$i]['service'];
-                    $quantite = $request[$i]['quantite'];
 
-                    $montantDefault = $this->getMontant($service);
-                    $montantPayement = $quantite * $montantDefault;
+                    if ($service == 1) {
 
-                    
-                    // Extraire les deux derniers chiffres du nombre
-                    $deuxDerniersChiffres = $montantPayement % 100;
-                    
+                        $minute = $request[$i]['quantite'];
 
-                    if ($deuxDerniersChiffres >= 50) {
-                        // Arrondir le montant au multiple de 100 supérieur le plus proche
-                        $nombreArrondi = ceil($montantPayement / 100) * 100;
+                        $montantDefault = $this->getMontant($service);
+                        $montantPayement = $minute * $montantDefault;
+                        $deuxDerniersChiffres = $montantPayement % 100;
+                        if ($deuxDerniersChiffres >= 50) {
+                            // Arrondir le montant au multiple de 100 supérieur le plus proche
+                            $nombreArrondi = ceil($montantPayement / 100) * 100;
+                        } else {
+                            // Arrondir le montant au multiple de 100 inférieur le plus proche
+                            $nombreArrondi = floor($montantPayement / 100) * 100;
+                        }
+                        $descriptionEntrant = Service::find((int)$service);
+
+                        $facture = Facture::create([
+                            'description' => $descriptionEntrant->designation,
+                            'service_id' => $service,
+                            'quantite' => $minute,
+                            'montant' => $nombreArrondi,
+                            'date' => Carbon::today(),
+                            'client' => $request->client,
+                            'user_id' => $userConnected,
+                            'personnel_id' => $request->personnels
+                        ]);
                     } else {
-                        // Arrondir le montant au multiple de 100 inférieur le plus proche
-                        $nombreArrondi = floor($montantPayement / 100) * 100;
+                        $quantite = $request[$i]['quantite'];
+
+                        $montantDefault = $this->getMontant($service);
+                        $montantPayement = $quantite * $montantDefault;
+
+
+                        // Extraire les deux derniers chiffres du nombre
+                        $deuxDerniersChiffres = $montantPayement % 100;
+
+
+                        if ($deuxDerniersChiffres >= 50) {
+                            // Arrondir le montant au multiple de 100 supérieur le plus proche
+                            $nombreArrondi = ceil($montantPayement / 100) * 100;
+                        } else {
+                            // Arrondir le montant au multiple de 100 inférieur le plus proche
+                            $nombreArrondi = floor($montantPayement / 100) * 100;
+                        }
+
+                        // dd($nombreArrondi);
+
+                        $descriptionEntrant = Service::find((int)$service);
+
+                        $facture = Facture::create([
+                            'description' => $descriptionEntrant->designation,
+                            'service_id' => $service,
+                            'quantite' => $quantite,
+                            'montant' => $nombreArrondi,
+                            'date' => Carbon::today(),
+                            'client' => $request->client,
+                            'user_id' => $userConnected,
+                            'personnel_id' => $request->personnels
+                        ]);
+                        // dd($facture);
                     }
-
-                    // dd($nombreArrondi);
-
-                    $descriptionEntrant = Service::find((int)$service);
-
-                    $facture = Facture::create([
-                        'description' => $descriptionEntrant->designation,
-                        'service_id' => $service,
-                        'quantite' => $quantite,
-                        'montant' => $nombreArrondi,
-                        'date' => Carbon::today(),
-                        'client' => $request->client,
-                        'user_id' => $userConnected,
-                        'personnel_id' => $request->personnels
-                    ]);
 
                     $id_facture[] = $facture->id;
                     $somme_montant += $facture->montant;
                 }
 
-
+                
                 $ids_concatenated = implode(',', $id_facture);
                 $id = $id_facture;
 

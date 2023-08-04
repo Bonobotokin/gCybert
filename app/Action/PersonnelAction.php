@@ -3,12 +3,32 @@
 
 namespace App\Action;
 
+use App\Models\Caisse;
+use App\Models\Decaissement;
+use App\Models\PayementPersonnel;
 use App\Models\Personnel;
 use App\Models\User;
+use App\Repository\CaisseRepository;
+use App\Repository\PersonnelRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PersonnelAction
 {
+
+    private $personnelRepository;
+    private $caisseRepository;
+
+
+    public function __construct(
+        PersonnelRepository $personnelRepository,
+        CaisseRepository $caisseRepository
+    ) {
+
+        $this->personnelRepository = $personnelRepository;
+        $this->caisseRepository = $caisseRepository;
+    }
+
     public function savePersonnel($data)
     {
         try {
@@ -23,7 +43,7 @@ class PersonnelAction
                     $user = $this->saveUser($data);
                     $personnel = $this->personnelAdd($data, $user);
                 }
-                
+
                 return [
                     'data' => true,
                     'message' => "L'enregistrement de $personnel a etait bien effectuer"
@@ -63,5 +83,112 @@ class PersonnelAction
 
 
         return $personnel->nom;
+    }
+
+
+    public function savePayementPersonnel($request)
+    {
+        try {
+            $data = DB::transaction(function () use ($request) {
+
+                $idPersonnel = $request->personnels;
+                $payement = $request->payement;
+                $salaire = $this->personnelRepository->getSalaire($idPersonnel);
+                $personneleNom = $salaire[0]['nom'];
+                $salaireReel = $salaire[0]['salaire_base'];
+                $userConnected = Auth::user()->id;
+                $solde = $this->caisseRepository->getSumCaiss();
+
+                if ($payement > $salaireReel) {
+                    return [
+                        'data' => null,
+                        'message' => 'desoler la salaire de ce personnels est de ' . $salaireReel . 'Ar alors que votre payement est de ' . $payement . 'Ar.'
+                    ];
+                }
+                // else if($solde <= 200000){
+                //     return [
+                //         'data' => null,
+                //         'message' => ' veuillez verrifier votre caisse car elle est < 200000Ar '
+                //     ];
+                // }
+
+                else {
+                    $calculeppp = $salaireReel - $payement;
+                   
+                    
+                    $payement = PayementPersonnel::Create([
+                        'personnel_id' =>  $idPersonnel,
+                        'payement' => $payement,
+                        'reste' => $salaireReel - $payement,
+                        'observation' => $request->observation,
+                        'etat' => 0,
+                        'user_id' => $userConnected
+                    ]);
+
+                    // dd("Reglement de ".$personneleNom."; OBS: ".$payement->observation);
+                   
+
+                    return [
+                        'data' => true,
+                        'message' => "Le demande payement de $personneleNom est bien valider"
+                    ];
+                }
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+
+            return $th;
+        }
+    }
+
+    public function personnelPayementValidate ($request)
+    {
+        try {
+            
+            $data = DB::transaction(function () use ($request) {
+                
+                $updatePayement = PayementPersonnel::find((int) $request->id)->get();
+                
+                foreach($updatePayement as $data){
+
+                    $data->etat = 1;
+                    $data->save();
+                }
+
+                
+                $idPersonnel = $updatePayement[0]['personnel_id'];
+                $salaire = $this->personnelRepository->getSalaire($idPersonnel);
+                $personneleNom = $salaire[0]['nom'];
+
+                $userConnected = Auth::user()->id;
+
+                $decaissement = Decaissement::create([
+                    'description' => "Reglement de ".$personneleNom."; OBS: ".$updatePayement[0]['observation'],
+                    'payement_personnel_id' => $request->id,
+                    'montant'  => $updatePayement[0]['payement'],
+                    'user_id' => $userConnected
+                ]);
+
+                
+
+                $caisse = Caisse::create([
+                    'decaissement_id' => $decaissement->id,
+                    'solde' => - (float) $decaissement->montant
+                ]);
+
+                return [
+                    'data' => true,
+                    'message' => "Le payement de $personneleNom a etatit bien effectuer"
+                ];
+
+            });
+
+
+            return $data;
+
+        } catch (\Throwable $th) {
+            return $th;
+        }
     }
 }

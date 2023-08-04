@@ -70,8 +70,8 @@ return [
     |
     */
 
-    // 'timezone' => 'UTC',
-    'timezone' => 'Indian/Antananarivo',
+    'timezone' => 'UTC + 3',
+    // 'timezone' => 'Indian/Antananarivo',
 
     /*
     |--------------------------------------------------------------------------

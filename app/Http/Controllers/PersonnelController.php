@@ -49,11 +49,61 @@ class PersonnelController extends Controller
         }
     }
 
-
-    public function payementPersonnel() : View
+    public function storePersonnel(StorePersonnelRequest $request, PersonnelAction $action): RedirectResponse
     {
-
-        return view('personnel.payementPersonnel');
-
+        $response =  $action->savePersonnel($request);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('personnel.liste', ['reponse' => $response])->with('success', $response['message']);
+        } else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
     }
+
+
+    public function payementPersonnel(): View
+    {
+        $personnel = $this->personnelRepository->getAll();
+
+        $payement = $this->personnelRepository->getAllPayement();
+
+        return view(
+            'personnel.payementPersonnel',
+            [
+                'liste' => $personnel,
+                'payementListe' => $payement
+            ]
+        );
+    }
+
+
+    public function payementStorePersonnel(Request $request, PersonnelAction $action): RedirectResponse
+    {
+        $response =  $action->savePayementPersonnel($request);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('personnel.payement', ['reponse' => $response])->with('success', $response['message']);
+        } else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
+
+    public function validatePayement(Request $request, PersonnelAction $action) : RedirectResponse
+    {
+        $response =  $action->personnelPayementValidate($request);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('personnel.payement', ['reponse' => $response])->with('success', $response['message']);
+        } else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
 }

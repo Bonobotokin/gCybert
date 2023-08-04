@@ -26,11 +26,6 @@ class DecaissementAction
 
                 $userConnected = Auth::user()->id;
 
-
-
-
-
-
                 $sumCaisse = $this->caisseRepository->getSumCaiss();
 
                 if ($request->montant > $sumCaisse) {

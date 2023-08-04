@@ -20,7 +20,7 @@ class CaisseRepository implements CaisseRepositoryInterfaces
 
             ->get()
             ->map(function ($data) {
-                $date = Carbon::parse($data->created_at)->format('m/d/Y');
+                $date = Carbon::parse($data->created_at)->format('d/m/Y');
                 return [
                     'description' => is_null($data) ? " " : $data->encaissement->description,
                     'solde' => is_null($data) ? " "  : $data->solde,
@@ -80,7 +80,7 @@ class CaisseRepository implements CaisseRepositoryInterfaces
         $livre = Caisse::with(['encaissement', 'decaissement'])
                 ->get()
                 ->map(function($livre) {
-                    $date = Carbon::parse($livre->created_at)->format('m/d/Y');
+                    $date = Carbon::parse($livre->created_at)->format('d/m/Y');
                     // dd($livre->encaissement->description);
                     return [
                         'numero' => $livre->id,

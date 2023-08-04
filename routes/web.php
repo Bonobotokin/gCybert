@@ -97,6 +97,9 @@ Route::get('/Magasin/etat_stock', [MaterielsController::class, 'etatStock'])->na
 
 Route::get('/Rh/listePersonnel', [PersonnelController::class, 'listePersonnel'])->name('personnel.liste');
 Route::get('/Rh/payementPersonnel', [PersonnelController::class, 'payementPersonnel'])->name('personnel.payement');
+Route::post('/Rh/savePersonnel', [PersonnelController::class, 'storePersonnel'])->name('personnel.save');
+Route::post('/Rh/savePayementPersonnel', [PersonnelController::class, 'payementStorePersonnel'])->name('payement.personnel');
+Route::post('/Rh/payementValidate', [PersonnelController::class, 'validatePayement'])->name('payement.validate');
 
 
 

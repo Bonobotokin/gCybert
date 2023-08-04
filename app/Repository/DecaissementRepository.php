@@ -20,7 +20,7 @@ class DecaissementRepository implements DecaissementRepositoryInterfaces
         $decaisse = Decaissement::with(['user','materiels'])
                     ->get()
                     ->map(function ($decaisse) {
-                        $date = Carbon::parse($decaisse->created_at)->format('m/d/Y');
+                        $date = Carbon::parse($decaisse->created_at)->format('d/m/Y');
                         return [
                             'num' => $decaisse->id,
                             'description' => $decaisse->description,

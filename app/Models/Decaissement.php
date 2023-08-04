@@ -15,6 +15,7 @@ class Decaissement extends Model
         'description',
         'quantite',
         'materiels_id',
+        'payement_personnel_id',
         'montant',
         'user_id'
     ];

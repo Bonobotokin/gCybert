@@ -31,4 +31,9 @@ class Personnel extends Model
     {
         return $this->hasMany(facture::class);
     }
+
+    public function payementPersonnel() : HasMany
+    {
+        return $this->hasMany(PayementPersonnel::class);
+    }
 }

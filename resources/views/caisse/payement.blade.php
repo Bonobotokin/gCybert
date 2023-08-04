@@ -59,7 +59,7 @@
                         @foreach ($payementToday as $key => $data)
                         <tr>
                             <td> {{$data['heure']}} </td>
-                            <td>Faite par {{ $data['salarier'] }}</td>
+                            <td> {{ $data['salarier'] }}</td>
                             <td> {{ $data['description'] }} </td>
                             <td> {{ $data['quantite'] }} </td>
                             <td> {{ $data['montant'] }} Ar</td>

@@ -75,7 +75,7 @@ class PayementController extends Controller
     public function storeMultiple(Request $request, PayementAction $action): RedirectResponse
     {
         $response =  $action->saveMultiple($request);
-        dd($response);
+        // dd($response);
         if (!is_null($response['data'])) {
             // dd($response, 'receptionisteController');exit;
             return redirect()->route('payement',['reponse'=>$response])->with('success', $response['message']);
@@ -89,7 +89,7 @@ class PayementController extends Controller
     public function storePayed(Request $request, PayementAction $action)
     {
         $response =  $action->updateEncaissement($request);
-        dd($response);
+        // dd($response);
         if (!is_null($response['data'])) {
             // dd($response, 'receptionisteController');exit;
             return redirect()->route('payement',['reponse'=>$response])->with('success', $response['message']);
