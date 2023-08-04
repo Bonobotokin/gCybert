@@ -96,7 +96,9 @@ class PayementAction
                     if ($service == 1) {
 
                         $minute = $request[$i]['quantite'];
-
+                        // dd($minute);
+                        $translateDurerr = $this->detecterHeuresMinutes($minute);
+                        
                         $montantDefault = $this->getMontant($service);
                         $montantPayement = $minute * $montantDefault;
                         $deuxDerniersChiffres = $montantPayement % 100;
@@ -108,9 +110,10 @@ class PayementAction
                             $nombreArrondi = floor($montantPayement / 100) * 100;
                         }
                         $descriptionEntrant = Service::find((int)$service);
-
+                        // translateDurerr
+                        // dd($descriptionEntrant->designation);
                         $facture = Facture::create([
-                            'description' => $descriptionEntrant->designation,
+                            'description' => $descriptionEntrant->designation. " durer " . $translateDurerr,
                             'service_id' => $service,
                             'quantite' => $minute,
                             'montant' => $nombreArrondi,
@@ -159,14 +162,15 @@ class PayementAction
                     $somme_montant += $facture->montant;
                 }
 
-                
+
                 $ids_concatenated = implode(',', $id_facture);
                 $id = $id_facture;
 
 
 
                 $encaissement = Encaissement::Create([
-                    'description' => is_null($request->client) ? "payement de " . $descriptionEntrant->designation : "payement de facture de " . $request->client,
+                    'description' => is_null($request->client) ? "Payement de " . $descriptionEntrant->designation . (is_null($translateDurerr) ? " " : " " . $translateDurerr) : "Payement de facture de " . $request->client,
+                
                     'facture_id' => $ids_concatenated,
                     'montant' => $somme_montant,
                     'payer' => 0,
@@ -379,4 +383,58 @@ class PayementAction
             //throw $th;
         }
     }
+
+    public function detecterHeuresMinutes($chaine)
+    {
+        // $chaine = "20";
+        $expressionReguliere = '/(\d{1,2})[:;,|&](\d{1,2})|(\d{1,3})/';
+        $resultat = preg_match($expressionReguliere, $chaine, $correspondances);
+        // dd($correspondances);
+        if ($resultat) {
+            if (isset($correspondances[1]) && isset($correspondances[2]) && $correspondances[1] != "" && $correspondances[2] != "" ) {
+                // Le cas où le nombre est au format "heures:minutes"
+                $heures = (int)$correspondances[1];
+                $minutes = (int)$correspondances[2];
+
+                if ($heures >= 0 && $heures <= 23 && $minutes >= 0 && $minutes <= 59) {
+                    return "$heures" . "h" . str_pad($minutes, 2, "0", STR_PAD_LEFT) . "mn";
+                }
+            } elseif (isset($correspondances[3])) {
+                // Le cas où le nombre est sans format spécifique (uniquement un nombre entier)
+                $nombre = (int)$correspondances[3];
+
+                if ($nombre >= 0 && $nombre < 60) {
+                    // Le nombre est considéré comme des minutes
+                    return "0h" . str_pad($nombre, 2, "0", STR_PAD_LEFT) . "mn";
+                } elseif ($nombre >= 60 && $nombre < 1000) {
+                    // Le nombre est considéré comme des heures et des minutes
+                    $heures = floor($nombre / 100);
+                    $minutes = $nombre % 100;
+
+                    if ($heures >= 0 && $heures <= 23 && $minutes >= 0 && $minutes <= 59) {
+                        return "$heures" . "h" . str_pad($minutes, 2, "0", STR_PAD_LEFT) . "mn";
+                    }
+                }
+            }
+        }
+
+        return "Aucune heure et minute détectée.";
+    }
+
+    // Exemple d'utilisation
+    // $chaine1 = "Il est 12:30 maintenant.";
+    // $chaine2 = "Le rendez-vous est à 15:45.";
+    // $chaine3 = "L'heure de départ est 130.";
+    // $chaine4 = "Le temps restant est 910.";
+    // $chaine5 = "145";
+    // $chaine6 = "1:45";
+
+    // echo detecterHeuresMinutes($chaine1) . "<br>";
+    // echo detecterHeuresMinutes($chaine2) . "<br>";
+    // echo detecterHeuresMinutes($chaine3) . "<br>";
+    // echo detecterHeuresMinutes($chaine4) . "<br>";
+    // echo detecterHeuresMinutes($chaine5) . "<br>";
+    // echo detecterHeuresMinutes($chaine6) . "<br>";
+
+
 }
