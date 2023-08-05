@@ -9,4 +9,6 @@ interface PersonnelRepositoryInterfaces
     public function getSalaire($id);
 
     public function getAllPayement();
+
+    public function  getAllPayementInYears();
 }

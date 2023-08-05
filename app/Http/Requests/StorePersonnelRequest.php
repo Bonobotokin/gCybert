@@ -26,9 +26,9 @@ class StorePersonnelRequest extends FormRequest
             'nom' => 'required',
             'age' => 'required',
             'salaire' => 'required',
-            'telephone' => ['required', 'numeric'],
+            // 'telephone' => ['required', 'numeric'],
             'adresse' => 'required',
-            'cin' => ['required', 'numeric']
+            // 'cin' => ['required', 'numeric']
             
         ];
     }
@@ -40,9 +40,9 @@ class StorePersonnelRequest extends FormRequest
             'nom' => 'Veuillez indiquer le nom et prenom du personnel',
             'age' => 'Donner son age',
             'age' => 'Donner son salaire de base',
-            'telephone' => 'veuillez renseigner le contact',
+            // 'telephone' => 'veuillez renseigner le contact',
             'adresse' => 'Une personne doit toujour avoir une adresse',
-            'cin' => 'presiser le cin du personnel',
+            // 'cin' => 'presiser le cin du personnel',
         ];
     }
 }

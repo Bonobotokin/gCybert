@@ -12,6 +12,6 @@ interface EncaissementRepositoryInterfaces
     public function getResteToDay();
     public function getAllSumReste();
 
-    
+    public function getLastMvm();
 
 }

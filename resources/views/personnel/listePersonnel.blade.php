@@ -43,7 +43,7 @@
                                 @endif
                             </td>
                             <td> {{$personnel['nom']}} </td>
-                            <td> +261 {{$personnel['telephone']}} </td>
+                            <td> {{$personnel['telephone']}} </td>
                             <td> {{$personnel['adresse']}} </td>
                             <td> {{ $personnel['salaire_base'] }} Ar</td>
                             <td class="material-design-btn">

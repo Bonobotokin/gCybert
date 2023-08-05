@@ -22,6 +22,189 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mg-t-10">
+        <div class="data-table-list">
+            <div class="basic-tb-hd">
+                <h2>Caisse</h2>
+            </div>
+            <div class="btn-list">
+                <div class="row">
+                    <a href="{{route('encaissement')}}" class="col-lg-4 col-md-4 col-sm-4 col-xs-12 ">
+                        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 " style="background-color: #2196F3;">
+                            <div class="website-traffic-ctn">
+                                <p class="text-center" style="color:white">Encaissement</p>
+                                <h2 style="color:white"><span class="counter" style="color:white"> {{ $encaissement }} </span>Ar</h2>
+
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{route('decaissement')}}" class="col-lg-4 col-md-4 col-sm-4 col-xs-12 ">
+                        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 " style="background-color: #8b0c29;">
+                            <div class="website-traffic-ctn">
+                                <p class="text-center" style="color:white">Decaissement</p>
+                                <h2 style="color:white"><span class="counter" style="color:white"> {{ $decaissement }} </span>Ar</h2>
+
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{route('livreCaisse')}}" class="col-lg-4 col-md-4 col-sm-4 col-xs-12 ">
+                        <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 " style="background-color: #0ca3b3;">
+                            <div class="website-traffic-ctn">
+                                <p class="text-center" style="color:white">Solde</p>
+                                <h2 style="color:white"><span class="counter" style="color:white"> {{ $solde }} </span>Ar</h2>
+
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+        <div class="recent-items-wp notika-shadow sm-res-mg-t-30">
+            <div class="rc-it-ltd">
+                <div class="recent-items-ctn">
+                    <div class="recent-items-title">
+                        <h2>Dernier Action dans l'encaissement</h2>
+                    </div>
+                </div>
+                <div class="recent-items-inn table-responsive">
+                    <table class="table table-inner table-vmiddle">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Montant</th>
+                                <th>Reste</th>
+                                <th style="width: 60px">Etat</th>
+                                <th>Personnel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($yesterDayEncaissement as $key => $data)
+                            <tr>
+                                <td class="f-500 c-cyan">{{ $data['description'] }}</td>
+                                <td>{{ $data['montant'] }}Ar</td>
+                                <td class="f-500 c-cyan">{{ $data['montant'] }}Ar</td>
+                                <td class="material-design-btn ">
+                                    @if ($data['etat'] == " " || $data['etat'] == 0)
+                                    <button class="btn notika-btn-deeporange waves-effect">Ouverture</button>
+                                    @elseif ($data['etat'] == 1)
+                                    <button class="btn notika-btn-red waves-effect">Non payer</button>
+                                    @elseif ($data['etat'] == 2)
+                                    <button class="btn notika-btn-purple waves-effect">Reste non payer</button>
+                                    @elseif ($data['etat'] == 3)
+                                    <button class="btn notika-btn-lightgreen waves-effect">Payer mais avec reste</button>
+                                    @elseif ($data['etat'] == 4)
+                                    <button class="btn notika-btn-lightgreen waves-effect">Payer</button>
+                                    @endif
+                                </td>
+                                <td class="f-500 c-cyan">{{ $data['salarier'] }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="recent-items-wp notika-shadow sm-res-mg-t-30">
+            <div class="rc-it-ltd">
+                <div class="recent-items-ctn">
+                    <div class="recent-items-title">
+                        <h2>Etat de caisse Mensuel</h2>
+                    </div>
+                </div>
+                <div class="recent-items-inn table-responsive">
+                    <table class="table table-inner table-vmiddle table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Annee</th>
+                                <?php
+                                // Récupérer l'année actuelle ou spécifier une année particulière
+
+                                // Boucle pour afficher les noms des mois de l'année
+                                for ($mois = 1; $mois <= 12; $mois++) {
+                                    $nomMois = date('F', mktime(0, 0, 0, $mois, 1));
+                                ?>
+                                    <th><?= $nomMois ?></th>
+                                <?php
+
+                                }
+                                ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($annee as $anneeMois)
+                            <tr>
+                                <td>{{ $anneeMois->annee }}</td>
+                                @for ($mois = 1; $mois <= 12; $mois++) <td>
+                                    @if ($anneeMois->mois == $mois)
+                                    {{ $anneeMois->montant }}Ar
+                                    @endif
+                                    </td>
+                                    @endfor
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="recent-items-wp notika-shadow sm-res-mg-t-30">
+            <div class="rc-it-ltd">
+                <div class="recent-items-ctn">
+                    <div class="recent-items-title">
+                        <h2>Personnel Payement</h2>
+                    </div>
+                </div>
+                <div class="recent-items-inn table-responsive">
+                <table class="table table-inner table-vmiddle table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Annee</th>
+                                <?php
+                                // Récupérer l'année actuelle ou spécifier une année particulière
+
+                                // Boucle pour afficher les noms des mois de l'année
+                                for ($mois = 1; $mois <= 12; $mois++) {
+                                    $nomMois = date('F', mktime(0, 0, 0, $mois, 1));
+                                ?>
+                                    <th><?= $nomMois ?></th>
+                                <?php
+
+                                }
+                                ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($annee as $anneeMois)
+                            <tr>
+                                <td>{{ $anneeMois->annee }}</td>
+                                @for ($mois = 1; $mois <= 12; $mois++) <td>
+                                    @if ($anneeMois->mois == $mois)
+                                    {{ $anneeMois->montant }}Ar
+                                    @endif
+                                    </td>
+                                    @endfor
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')

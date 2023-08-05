@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Personnel;
 use App\Models\PayementPersonnel;
 use App\Interfaces\PersonnelRepositoryInterfaces;
+use Illuminate\Support\Facades\DB;
 
 class PersonnelRepository implements PersonnelRepositoryInterfaces
 {
@@ -18,7 +19,7 @@ class PersonnelRepository implements PersonnelRepositoryInterfaces
                                 'id' => $data->id,
                                 'nom' => $data->nom,
                                 'sexe' => $data->sexe_personneles,
-                                'telephone' => $data->telephone,
+                                'telephone' =>is_null( $data->telephone)? "Pas de numero enregistrer" :  $data->telephone,
                                 'adresse' => $data->adresse,
                                 'salaire_base' => $data->salaire_base
                             ];
@@ -60,5 +61,15 @@ class PersonnelRepository implements PersonnelRepositoryInterfaces
 
         // dd($payement);          
         return $payement;
+    }
+
+
+    public function getAllPayementInYears()
+    {
+        $anneeMiseAJour = PayementPersonnel::with('personnel')->selectRaw('YEAR(updated_at) as annee, MONTH(updated_at) as mois, payement as montant, reste')
+        ->groupBy(DB::raw('YEAR(updated_at), MONTH(updated_at), payement,reste'))
+        ->orderByRaw('YEAR(updated_at), MONTH(updated_at)')
+        ->get();
+    return $anneeMiseAJour;
     }
 }

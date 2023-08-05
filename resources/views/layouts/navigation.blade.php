@@ -46,8 +46,8 @@
                     </div>
                     <div id="Parametres" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
-                            <li><a href="{{route('parametres.personnel')}}">Personnel</a>
-                            </li>
+                            <!-- <li><a href="{{route('parametres.personnel')}}">Personnel</a>
+                            </li> -->
                             <li><a href="{{route('parametres.application')}}">Applications</a>
                             </li>
                             <!-- <li><a href="{{route('parametres.caisse')}}">Caisses</a></li> -->

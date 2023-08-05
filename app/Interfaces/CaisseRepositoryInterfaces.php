@@ -15,4 +15,6 @@ interface CaisseRepositoryInterfaces
     public function getSumCaiss();
 
     public function lookResteClient(string $client);
+
+    public function getannee();
 }

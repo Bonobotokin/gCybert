@@ -1,6 +1,6 @@
 <div class="btn-list">
 
-    <button type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newServices">Noveaux Services</button>
+    <button type="button" class="btn btn-primary waves-effect " data-toggle="modal" data-target="#newServices">Noveaux Services</button>
 </div>
 <div class="table-responsive mg-t-10">
     <table id="example1" class="table table-bordered table-striped">

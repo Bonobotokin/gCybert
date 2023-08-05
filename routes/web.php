@@ -1,15 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CaissesController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PayementController;
+use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\MaterielsController;
+use App\Http\Controllers\PersonnelController;
+use App\Http\Controllers\ParametresController;
 use App\Http\Controllers\DecaissementController;
 use App\Http\Controllers\EncaissementController;
-use App\Http\Controllers\MaterielsController;
-use App\Http\Controllers\ParametresController;
-use App\Http\Controllers\PayementController;
-use App\Http\Controllers\PersonnelController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ServicesController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/home', function () {
-    return view('home');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/home', [HomeController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
