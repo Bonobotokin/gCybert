@@ -15,10 +15,24 @@
             <div class="btn-list">
                 <div class="row">
                     <div class="col-lg-4">
-                        <button id="btnStart" type="button" class="btn btn-success waves-effect " data-toggle="modal" data-target="#debut">Debut de la journee</button>
-                        <!-- <button type="button" class="btn btn-danger waves-effect " data-toggle="modal" data-target="#fin">Fin de la journee</button> -->
-                        <!-- <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayed">Simple Payement </button> -->
-                        <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayedMultiple">Multiple Payement</button>
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <button id="btnStart" type="button" class="btn btn-success waves-effect " data-toggle="modal" data-target="#debut">Debut de la journee</button>
+                            </div>
+                            <div class="col-lg-4">
+                                <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayedMultiple">Multiple Payement</button>
+                            </div>
+                            <div class="col-lg-4">
+
+                                <form action="{{route('finJourney')}}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger waves-effect " data-toggle="modal" data-target="#fin">Fin de la journee</button>
+                                </form>
+                            </div>
+                            <!-- <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayed">Simple Payement </button> -->
+                            
+                        </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                         <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 " style="background-color: #e31a6e;">

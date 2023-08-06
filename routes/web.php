@@ -72,6 +72,7 @@ Route::get('caisse/livre_caisse', [CaissesController::class, 'livreCaisse'])->na
  * 
  * */ 
 Route::post('caisse/debut_journey', [EncaissementController::class, 'storeDebutJournee'])->name('debutJourney');
+Route::post('caisse/fin_journey', [EncaissementController::class, 'storeFinJournee'])->name('finJourney');
 Route::get('caisse/payement', [PayementController::class, 'payement'])->name('payement');
 Route::post('caisse/savePayement', [PayementController::class, 'store'])->name('save.payement');
 Route::post('caisse/savePayement/Multiple', [PayementController::class, 'storeMultiple'])->name('save.payement.mutiple');
@@ -99,6 +100,14 @@ Route::get('/Rh/payementPersonnel', [PersonnelController::class, 'payementPerson
 Route::post('/Rh/savePersonnel', [PersonnelController::class, 'storePersonnel'])->name('personnel.save');
 Route::post('/Rh/savePayementPersonnel', [PersonnelController::class, 'payementStorePersonnel'])->name('payement.personnel');
 Route::post('/Rh/payementValidate', [PersonnelController::class, 'validatePayement'])->name('payement.validate');
+
+
+/**
+ * AutocompleteController
+ * 
+ * */ 
+
+ Route::get('/autocomplete', 'AutocompleteController@search');
 
 
 

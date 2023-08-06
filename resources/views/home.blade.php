@@ -1,5 +1,8 @@
 @extends('layouts.app')
+
 @section('style')
+
+<link rel="stylesheet" href="{{ asset ('assets/css/jquery.dataTables.min.css')}}">
 @endsection
 @section('content')
 @if (session('status'))
@@ -72,7 +75,7 @@
                     </div>
                 </div>
                 <div class="recent-items-inn table-responsive">
-                    <table class="table table-inner table-vmiddle">
+                    <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Description</th>
@@ -121,7 +124,7 @@
                     </div>
                 </div>
                 <div class="recent-items-inn table-responsive">
-                    <table class="table table-inner table-vmiddle table-bordered">
+                    <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Annee</th>
@@ -168,9 +171,10 @@
                     </div>
                 </div>
                 <div class="recent-items-inn table-responsive">
-                <table class="table table-inner table-vmiddle table-bordered">
+                    <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th>Nom</th>
                                 <th>Annee</th>
                                 <?php
                                 // Récupérer l'année actuelle ou spécifier une année particulière
@@ -187,8 +191,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($annee as $anneeMois)
+                            @foreach($annePersonnel as $anneeMois)
                             <tr>
+                                <td> {{ $anneeMois->nom_personnel }} </td>
                                 <td>{{ $anneeMois->annee }}</td>
                                 @for ($mois = 1; $mois <= 12; $mois++) <td>
                                     @if ($anneeMois->mois == $mois)
@@ -208,6 +213,35 @@
 @endsection
 
 @section('script')
+
+<script src="{{ asset ('assets/js/chosen/chosen.jquery.js')}}"></script>
+<script src="{{ asset ('assets/js/data-table/jquery.dataTables.min.js')}}"></script>
+<script src="{{ asset ('assets/js/data-table/data-table-act.js')}}"></script>
+
+
+<script src="{{ asset ('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/jszip/jszip.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/pdfmake/pdfmake.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/pdfmake/vfs_fonts.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
+<script>
+    $(function() {
+        $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "order": [
+                [1, "desc"]
+            ],
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md4:eq(0)');
+    });
+</script>
 <script>
     window.onload = () => {
         var currentUrl = window.location.href.split('/')[3]

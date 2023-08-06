@@ -384,6 +384,45 @@ class PayementAction
         }
     }
 
+
+    public function saveFinJourney()
+    {
+        // dd($request);
+        try {
+            $data = DB::transaction(function () {
+                
+                $dateDay = Carbon::today();
+
+                $userConnected = Auth::user()->id;
+                $recetteToDay = Encaissement::where('date', $dateDay)->sum('montant');
+
+                
+
+                $endDay = Encaissement::create([
+                    'description' => 'Fin du caisse a la somme de '.$recetteToDay.'Ar',
+                    'montant' => $recetteToDay,
+                    'date' => $dateDay,
+                    'user_id' => $userConnected,
+                ]);
+                
+                $caisse = Caisse::create([
+                    'encaissement_id' => $endDay->id,
+                    'solde' => 0
+                ]);
+               
+                return [
+                    'data' => true,
+                    'message' => "Fin de la journey, vous avez collecte de  $recetteToDay Ar "
+                ];
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+
     public function detecterHeuresMinutes($chaine)
     {
         // $chaine = "20";
@@ -420,21 +459,5 @@ class PayementAction
 
         return "Aucune heure et minute détectée.";
     }
-
-    // Exemple d'utilisation
-    // $chaine1 = "Il est 12:30 maintenant.";
-    // $chaine2 = "Le rendez-vous est à 15:45.";
-    // $chaine3 = "L'heure de départ est 130.";
-    // $chaine4 = "Le temps restant est 910.";
-    // $chaine5 = "145";
-    // $chaine6 = "1:45";
-
-    // echo detecterHeuresMinutes($chaine1) . "<br>";
-    // echo detecterHeuresMinutes($chaine2) . "<br>";
-    // echo detecterHeuresMinutes($chaine3) . "<br>";
-    // echo detecterHeuresMinutes($chaine4) . "<br>";
-    // echo detecterHeuresMinutes($chaine5) . "<br>";
-    // echo detecterHeuresMinutes($chaine6) . "<br>";
-
 
 }

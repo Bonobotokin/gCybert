@@ -51,7 +51,8 @@ class HomeController extends Controller
                 'solde' => $solde,
                 'livreCaisse' => $livreCaisse,
                 'yesterDayEncaissement' => $mvmCaisseLast,
-                'annee' => $annee
+                'annee' => $annee,
+                'annePersonnel' => $annePersonnel
             ]
         );
     }
