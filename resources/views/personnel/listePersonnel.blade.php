@@ -582,7 +582,7 @@
         var pseudo = document.getElementById("pseudo");
         var email = document.getElementById("email");
 
-        email.value = pseudo.value + "@cybert.app"
+        email.value = pseudo.value + "@cyber.hub"
     }
 </script>
 @endsection

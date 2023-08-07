@@ -25,10 +25,10 @@ class PersonnelRepository implements PersonnelRepositoryInterfaces
                     'adresse' => $data->adresse,
                     'cin' => $data->cin,
                     'salaire_base' => $data->salaire_base,
-                    'nom_user' => $data->user->name,
-                    'email' => $data->user->email,
-                    'password' => $data->user->password,
-                    'role' => $data->user->role,
+                    'nom_user' => is_null($data->user)? " " : $data->user->name,
+                    'email' => is_null($data->user)? " " : $data->user->email,
+                    'password' => is_null($data->user)? " " : $data->user->password,
+                    'role' => is_null($data->user)? " " : $data->user->role,
                 ];
             });
 

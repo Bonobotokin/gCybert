@@ -64,6 +64,37 @@ class PayementController extends Controller
                 ]);
     }
 
+    public function modificationFacture($id) : View
+    {
+        
+        $facture = $this->encaissementRepository->getListeFacture($id);
+        $factureById = $this->encaissementRepository->factureById($id);
+        // dd($factureById]);
+        $service = $this->servicesRepository->getAll();
+        $materiels = $this->materielsRepository->getAll();
+        $dataPayement = $this->encaissementRepository->getAllToDay();
+        // dd($dataPayement);
+        $dateNow = Carbon::parse(now())->format('Y-m-d');
+        $recette = $this->encaissementRepository->getRecetteToDay();
+        $personnel = $this->personnelRepository->getAll();
+        $credit = $this->encaissementRepository->getResteToDay();
+
+        $btnStart = $this->activeRepository->activeBtnDay();
+        // dd($dataPayement);
+        return view('caisse.modificationFacture', 
+                [
+                    'service'=> $service,
+                    'materiels' => $materiels,
+                    'payementToday' => $dataPayement,
+                    'dateNow' => $dateNow,
+                    'recette' => $recette,
+                    'liste' => $personnel,
+                    'credit' => $credit,
+                    'facture' => $facture,
+                    'factureById' => $factureById[0]
+                ]);
+    }
+
     public function store(StorePayementRequest $request, PayementAction $action) : RedirectResponse
     {
         $response =  $action->savePayement($request);
@@ -95,6 +126,20 @@ class PayementController extends Controller
     public function storePayed(Request $request, PayementAction $action)
     {
         $response =  $action->updateEncaissement($request);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('payement',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
+    public function update(Request $request, $id ,PayementAction $action)
+    {
+        $response =  $action->updateData($request, $id);
         // dd($response);
         if (!is_null($response['data'])) {
             // dd($response, 'receptionisteController');exit;

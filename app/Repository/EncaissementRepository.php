@@ -10,6 +10,57 @@ use Carbon\Carbon;
 
 class EncaissementRepository implements EncaissementRepositoryInterfaces
 {
+
+    public function getListeFacture($id)
+    {
+        $encaissement = Encaissement::where('id', $id)->first();
+        
+
+        $factureIds = explode(',', $encaissement->facture_id);
+        $factures = Facture::with('service')->whereIn('id', $factureIds)->get();
+
+        $facturesArray = $factures->map(function ($facture) {
+            return [
+                'description' => $facture->description,
+                'service' => $facture->service->designation,
+                'quantite' => $facture->quantite,
+                'montant' => $facture->montant,
+                'date' => $facture->date,
+                'client' => $facture->client,
+                'user_id' => $facture->user_id,
+                'personnel_id' => $facture->personnel_id,
+            ];
+        });
+
+        return $facturesArray;
+    }
+
+    public function factureById($id)
+    {
+        $encaissement = Encaissement::where('id', $id)->first();
+        
+
+        $factureIds = explode(',', $encaissement->facture_id);
+        $factures = Facture::with('service')->whereIn('id', $factureIds)->get();
+
+        
+        $facturesArray = $factures->map(function ($facture,$nombreDeFactures) {
+            
+            return [
+                'description' => $facture->description,
+                'service' => $facture->service->designation,
+                'quantite' => $facture->quantite,
+                'montant' => $facture->montant,
+                'date' => $facture->date,
+                'client' => $facture->client,
+                'user_id' => $facture->user_id,
+                'personnel_id' => $facture->personnel_id,
+            ];
+        });
+
+        return $facturesArray;
+    }
+
     public function getDefault()
     {
         $data = Encaissement::with(['caisse', 'user'])

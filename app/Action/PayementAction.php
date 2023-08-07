@@ -97,9 +97,9 @@ class PayementAction
                     if ($service == 1) {
 
                         $minute = $request[$i]['quantite'];
-                      
+
                         $translateDurerr = $this->detecterHeuresMinutes($minute);
-                        
+
                         $montantDefault = $this->getMontant($service);
                         $montantPayement = $minute * $montantDefault;
                         // dd($montantPayement);
@@ -119,7 +119,7 @@ class PayementAction
                         // translateDurerr
                         // dd($descriptionEntrant->designation);
                         $facture = Facture::create([
-                            'description' => $descriptionEntrant->designation. " durer " . $translateDurerr,
+                            'description' => $descriptionEntrant->designation . " durer " . $translateDurerr,
                             'service_id' => $service,
                             'quantite' => $minute,
                             'montant' => $nombreArrondi,
@@ -173,10 +173,10 @@ class PayementAction
                 $id = $id_facture;
 
                 // dd($translateDurerr);
-                
+
                 $encaissement = Encaissement::Create([
                     'description' => is_null($request->client) ? "Payement de " . $descriptionEntrant->designation . (is_null($translateDurerr) ? " " : " " . $translateDurerr) : "Payement de facture de " . $request->client,
-                
+
                     'facture_id' => $ids_concatenated,
                     'montant' => $somme_montant,
                     'payer' => 0,
@@ -313,6 +313,57 @@ class PayementAction
     }
 
 
+    public function updateData($request, $id)
+    {
+
+        try {
+
+            $data = DB::transaction(function () use ($request, $id) {
+
+                // $lookIfResteCilent = $this->caisseRepository->lookResteClient($request->client);
+
+                $userConnected = Auth::user()->id;
+
+
+                $encaissements = Encaissement::findOrFail($id);
+                if (!is_null($encaissements->facture_id)) {
+
+                    $encaissements->montant = $request->montant;
+                    $encaissements->date = Carbon::today();
+                    $encaissements->ispayed = 0;
+                    $encaissements->user_id = $userConnected;
+                    $encaissements->save();
+                    $factureId = $encaissements->facture_id;
+                    $facture = facture::whereIn('id', explode(',', $factureId))->get();
+                    dd($facture);
+                }
+                $encaissements->montant = $request->montant;
+                $encaissements->date = Carbon::today();
+                $encaissements->ispayed = 0;
+                $encaissements->user_id = $userConnected;
+                $encaissements->save();
+
+                $caisse = Caisse::where('encaissement_id', $encaissements->id)->first();
+
+                $caisse->solde = $encaissements->montant;
+                $caisse->save();
+
+
+                return [
+                    'data' => true,
+                    'message' => 'Votre mises a jour est bien reussit'
+                ];
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+
+            return $th;
+        }
+    }
+
+
+
     public function stock($data, $description)
     {
 
@@ -396,26 +447,26 @@ class PayementAction
         // dd($request);
         try {
             $data = DB::transaction(function () {
-                
+
                 $dateDay = Carbon::today();
 
                 $userConnected = Auth::user()->id;
                 $recetteToDay = Encaissement::where('date', $dateDay)->sum('montant');
 
-                
+
 
                 $endDay = Encaissement::create([
-                    'description' => 'Fin du caisse a la somme de '.$recetteToDay.'Ar',
+                    'description' => 'Fin du caisse a la somme de ' . $recetteToDay . 'Ar',
                     'montant' => $recetteToDay,
                     'date' => $dateDay,
                     'user_id' => $userConnected,
                 ]);
-                
+
                 $caisse = Caisse::create([
                     'encaissement_id' => $endDay->id,
                     'solde' => 0
                 ]);
-               
+
                 return [
                     'data' => true,
                     'message' => "Fin de la journey, vous avez collecte de  $recetteToDay Ar "
@@ -436,7 +487,7 @@ class PayementAction
         $resultat = preg_match($expressionReguliere, $chaine, $correspondances);
         // dd($correspondances);
         if ($resultat) {
-            if (isset($correspondances[1]) && isset($correspondances[2]) && $correspondances[1] != "" && $correspondances[2] != "" ) {
+            if (isset($correspondances[1]) && isset($correspondances[2]) && $correspondances[1] != "" && $correspondances[2] != "") {
                 // Le cas où le nombre est au format "heures:minutes"
                 $heures = (int)$correspondances[1];
                 $minutes = (int)$correspondances[2];
@@ -465,5 +516,4 @@ class PayementAction
 
         return "Aucune heure et minute détectée.";
     }
-
 }

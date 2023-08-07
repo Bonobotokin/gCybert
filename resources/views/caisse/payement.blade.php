@@ -21,7 +21,7 @@
                                 <button id="btnStart" type="button" class="btn btn-success waves-effect " data-toggle="modal" data-target="#debut">Debut de la journee</button>
                             </div>
                             <div class="col-lg-4">
-                                <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayedMultiple">Multiple Payement</button>
+                                <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayedMultiple">Payement</button>
                             </div>
                             <div class="col-lg-4">
 
@@ -96,11 +96,12 @@
                             </td>
                             <td class="material-design-btn">
                                 @if ($data['etat'] == 0 || $data['etat'] == 3 || $data['etat'] == 4 || $data['etat'] == 5)
-                                <button class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
+                                <button data-toggle="modal" data-target="#update_{{ $data['numero'] }}"  class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
 
                                 @else
                                 <button data-toggle="modal" data-target="#payed_{{ $data['numero'] }}" class="btn notika-btn-purple btn-reco-mg btn-button-mg waves-effect">Payer</button>
-                                <button class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
+                                <a type="button" href="{{ route('get.liste.facture', ['id' => $data['numero']]) }}" target="_blank" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</a>
+
                                 @endif
 
                             </td>
@@ -130,6 +131,51 @@
                                                                                                                                                                                 } else {
                                                                                                                                                                                     echo $data['reste'];
                                                                                                                                                                                 } ?>" placeholder="montant Payer" autocomplete="client" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <button type="reset" class="btn btn-danger btn-lg btn-block" data-dismiss="modal">
+                                                        <i class="mdi mdi-account-multiple-minus "></i>
+                                                        Annuler
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button type="submit" class="btn btn-success btn-lg btn-block">
+                                                        <i class="mdi mdi-account-check "></i>
+                                                        Enregistrer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="update_{{ $data['numero'] }}" role="dialog">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5>Payement de la facture de {{ $data['client'] }}</h5>
+                                        <form class="form-sample" action="{{ route('update.payement', $data['numero'] ) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="id" value="{{$data['numero']}}">
+                                            <input type="hidden" name="client" value="{{$data['client']}}">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group ic-cmp-int">
+                                                        <div class="form-ic-cmp">
+                                                            <!-- <i class="notika-icon notika-calculator"></i> -->
+                                                        </div>
+                                                        <div class="nk-int-st">
+                                                            <input type="text" id="montant" name="montant" class="form-control" value="{{ $data['montant'] }}" placeholder="montant Payer" />
                                                         </div>
                                                     </div>
                                                 </div>

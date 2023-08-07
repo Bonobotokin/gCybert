@@ -118,6 +118,8 @@ Route::get('caisse/payement', [PayementController::class, 'payement'])->name('pa
 Route::post('caisse/savePayement', [PayementController::class, 'store'])->name('save.payement');
 Route::post('caisse/savePayement/Multiple', [PayementController::class, 'storeMultiple'])->name('save.payement.mutiple');
 Route::post('caisse/payed', [PayementController::class, 'storePayed'])->name('payed.payement');
+Route::put('caisse/update/pated/{id}', [PayementController::class, 'update'])->name('update.payement');
 
+Route::get('caisse/update/facture/{id}', [PayementController::class, 'modificationFacture'])->name('get.liste.facture');
 
 Route::get('/autocomplete', [AutocompleteController::class, 'searchDataService'])->name('autocomplete');

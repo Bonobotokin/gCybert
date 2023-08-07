@@ -14,4 +14,7 @@ interface EncaissementRepositoryInterfaces
 
     public function getLastMvm();
 
+    public function getListeFacture($id);
+    public function factureById($id);
+
 }
