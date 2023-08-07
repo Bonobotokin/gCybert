@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('totale');
             $table->string('conditionnement');
             // $table->double('prix_vente', 10,2)->default(0.00);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained()
+                ->onDelete('CASCADE');
             $table->timestamps();
         });
     }

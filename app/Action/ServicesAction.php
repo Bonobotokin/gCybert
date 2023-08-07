@@ -46,5 +46,48 @@ class ServicesAction
         }
     }
 
+    public function updateServices($request,$id)
+    {
+        try {
+            $data = DB::transaction(function () use ($request,$id){
+                $userConnected = Auth::user()->id;
+                $service = Service::findOrFail($id);
+                $service->designation = $request->designation;
+                $service->materiels_id = $request->materiels_id;
+                $service->prix = $request->prix;
+                $service->user_id = $userConnected;
+
+                $service->save();
+
+                // dd($service);
+                return [
+                    'data' => true,
+                    'message' => 'La mises a jour a etait bien effectuer '
+                ];
+            });
+            return $data;
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
+
+    public function deleteService($id)
+    {
+        try {
+            $data = DB::transaction(function () use ($id){
+                $service = Service::findOrFail($id);
+                $service->delete();
+                return [
+                    'data' => true,
+                    'message' => 'Votre demande a ette bien effectuer '
+                ];
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
+
     
 }

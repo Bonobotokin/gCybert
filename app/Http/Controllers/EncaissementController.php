@@ -54,9 +54,10 @@ class EncaissementController extends Controller
         }
     }
 
-    public function storeFinJournee(Request $request, PayementAction $action) : RedirectResponse
+
+    public function storeFinJournee(PayementAction $action) : RedirectResponse
     {
-        $response =  $action->saveDebutJourney($request);
+        $response =  $action->saveFinJourney();
         // dd($response);
         if (!is_null($response['data'])) {
             // dd($response, 'receptionisteController');exit;

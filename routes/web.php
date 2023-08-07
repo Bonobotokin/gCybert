@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AutocompleteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CaissesController;
 use App\Http\Controllers\ProfileController;
@@ -35,71 +36,88 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 
 /**
  * 
  * Parametres de l'application
  * 
- * */ 
+ * */
 
-Route::get('/parametres/personnel', [ParametresController::class, 'personnel'])->name('parametres.personnel');
-Route::post('/parametres/savePersonnel', [PersonnelController::class, 'store'])->name('save.personnel');
-
-Route::get('/parametres/applications', [ParametresController::class, 'applications'])->name('parametres.application');
-Route::post('/parametres/saveNewServices', [ServicesController::class, 'store'] )->name('save.service');
-
-Route::post('/parametres/saveNewMateriel', [MaterielsController::class, 'store'])->name('save.materiels');
-
-Route::get('/parametres/caisses', [ParametresController::class, 'caisses'])->name('parametres.caisse');
-Route::post('/parametre/saveDefaultCaisse', [CaissesController::class, 'store'])->name('save.default.caisse');
+Route::middleware(['auth', 'isAdmin'])->group(function () {
 
 
-/**
- * 
- * Caisses
- * 
- * */ 
-Route::get('caisse/encaissement', [EncaissementController::class, 'index'])->name('encaissement');
-Route::get('caisse/decaissement', [DecaissementController::class, 'decaissement'])->name('decaissement');
-Route::post('caisse/save_decaissement', [DecaissementController::class, 'store'])->name('save.decaissement');
-Route::get('caisse/livre_caisse', [CaissesController::class, 'livreCaisse'])->name('livreCaisse');
+    Route::get('/parametres/personnel', [ParametresController::class, 'personnel'])->name('parametres.personnel');
+    Route::post('/parametres/savePersonnel', [PersonnelController::class, 'store'])->name('save.personnel');
+
+    Route::get('/parametres/applications', [ParametresController::class, 'applications'])->name('parametres.application');
+
+    Route::post('/parametres/saveNewServices', [ServicesController::class, 'store'])->name('save.service');
+    Route::put('/parametres/updateService/{id}', [ServicesController::class, 'update'])->name('update.service');
+    Route::delete('/parametres/updateService/{id}', [ServicesController::class, 'delete'])->name('delete.service');
+
+    Route::post('/parametres/saveNewMateriel', [MaterielsController::class, 'store'])->name('save.materiels');
+    Route::put('/parametres/updateMateriel/{id}', [MaterielsController::class, 'update'])->name('update.materiels');
+    Route::delete('/parametres/deleteMateriel/{id}', [MaterielsController::class, 'destroy'])->name('delete.materiels');
+
+
+    Route::get('/parametres/caisses', [ParametresController::class, 'caisses'])->name('parametres.caisse');
+    Route::post('/parametre/saveDefaultCaisse', [CaissesController::class, 'store'])->name('save.default.caisse');
+
+    /**
+     * 
+     * Caisses
+     * 
+     * */
+    Route::get('caisse/encaissement', [EncaissementController::class, 'index'])->name('encaissement');
+    Route::get('caisse/decaissement', [DecaissementController::class, 'decaissement'])->name('decaissement');
+    Route::post('caisse/save_decaissement', [DecaissementController::class, 'store'])->name('save.decaissement');
+    Route::get('caisse/livre_caisse', [CaissesController::class, 'livreCaisse'])->name('livreCaisse');
+
+
+    /**
+     * 
+     * Materiel & Stock
+     * 
+     * */
+
+    Route::get('/Magasin/stock', [MaterielsController::class, 'stock'])->name('stock');
+
+    Route::put('/Magasin/stock/{id}', [MaterielsController::class, 'approvisionnement'])->name('approvisionnement');
+
+    Route::get('/Magasin/etat_stock', [MaterielsController::class, 'etatStock'])->name('etatStock');
+
+
+    /**
+     * 
+     * Ressources Hummaine
+     * 
+     * */
+
+    Route::get('/Rh/listePersonnel', [PersonnelController::class, 'listePersonnel'])->name('personnel.liste');
+    Route::get('/Rh/payementPersonnel', [PersonnelController::class, 'payementPersonnel'])->name('personnel.payement');
+    Route::post('/Rh/savePersonnel', [PersonnelController::class, 'storePersonnel'])->name('personnel.save');
+    Route::post('/Rh/savePayementPersonnel', [PersonnelController::class, 'payementStorePersonnel'])->name('payement.personnel');
+    Route::post('/Rh/payementValidate', [PersonnelController::class, 'validatePayement'])->name('payement.validate');
+    Route::put('/Rh/listePersonnel/update/{id}', [PersonnelController::class, 'updatePersonnel'])->name('personnel.update');
+    Route::delete('/Rh/listePersonnel/update/{id}', [PersonnelController::class, 'deletePersonnel'])->name('personnel.delete');
+
+
+});
+
 
 /**
  * 
  * Payement
  * 
- * */ 
+ * */
 Route::post('caisse/debut_journey', [EncaissementController::class, 'storeDebutJournee'])->name('debutJourney');
+Route::post('caisse/fin_journey', [EncaissementController::class, 'storeFinJournee'])->name('finJourney');
 Route::get('caisse/payement', [PayementController::class, 'payement'])->name('payement');
 Route::post('caisse/savePayement', [PayementController::class, 'store'])->name('save.payement');
 Route::post('caisse/savePayement/Multiple', [PayementController::class, 'storeMultiple'])->name('save.payement.mutiple');
 Route::post('caisse/payed', [PayementController::class, 'storePayed'])->name('payed.payement');
 
 
-/**
- * 
- * Materiel & Stock
- * 
- * */ 
-
-Route::get('/Magasin/stock', [MaterielsController::class, 'stock'])->name('stock');
-Route::get('/Magasin/etat_stock', [MaterielsController::class, 'etatStock'])->name('etatStock');
-
- 
-/**
- * 
- * Ressources Hummaine
- * 
- * */ 
-
-Route::get('/Rh/listePersonnel', [PersonnelController::class, 'listePersonnel'])->name('personnel.liste');
-Route::get('/Rh/payementPersonnel', [PersonnelController::class, 'payementPersonnel'])->name('personnel.payement');
-Route::post('/Rh/savePersonnel', [PersonnelController::class, 'storePersonnel'])->name('personnel.save');
-Route::post('/Rh/savePayementPersonnel', [PersonnelController::class, 'payementStorePersonnel'])->name('payement.personnel');
-Route::post('/Rh/payementValidate', [PersonnelController::class, 'validatePayement'])->name('payement.validate');
-
-
-
-
+Route::get('/autocomplete', [AutocompleteController::class, 'searchDataService'])->name('autocomplete');

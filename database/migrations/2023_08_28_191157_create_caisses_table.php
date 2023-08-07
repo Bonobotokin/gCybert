@@ -15,9 +15,11 @@ return new class extends Migration
     {
         Schema::create('caisses', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Encaissement::class)->nullable()->constrained();
-            $table->foreignIdFor(Decaissement::class)->nullable()->constrained();
-            $table->double('solde',10,2)->default(0.00);
+            $table->foreignIdFor(Encaissement::class)->nullable()->constrained()
+                ->onDelete('CASCADE');
+            $table->foreignIdFor(Decaissement::class)->nullable()->constrained()
+                ->onDelete('CASCADE');
+            $table->double('solde', 10, 2)->default(0.00);
             $table->timestamps();
         });
     }

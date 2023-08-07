@@ -57,4 +57,54 @@ class MaterielsController extends Controller
             return redirect()->back()->withErrors($response)->withInput();
         }
     }
+
+    public function update(Request $request, $id,MaterielsAction $action) : RedirectResponse
+    {
+        
+
+        $response =  $action->updateMateriels($request, $id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('parametres.application',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+
+    }
+
+    public function destroy($id,MaterielsAction $action) : RedirectResponse
+    {
+        // dd($id);
+        $response =  $action->deleteMateriels($id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('parametres.application',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+
+    }
+
+
+    public function approvisionnement(Request $request,$id ,MaterielsAction $action) : RedirectResponse
+    {
+        $response =  $action->approvisionnement($request, $id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('stock',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
+
 }

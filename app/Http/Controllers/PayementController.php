@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Action\PayementAction;
 use App\Http\Requests\StorePayementRequest;
+use App\Repository\ActiveRepository;
 use App\Repository\EncaissementRepository;
 use App\Repository\MaterielsRepository;
 use App\Repository\payementRepository;
@@ -21,18 +22,21 @@ class PayementController extends Controller
     private $materielsRepository;
     private $encaissementRepository;
     private $personnelRepository;
+    private $activeRepository;
 
     public function __construct(
         ServicesRepository $servicesRepository,
         MaterielsRepository $materielsRepository,
         EncaissementRepository $encaissementRepository,
         PersonnelRepository $personnelRepository,
+        ActiveRepository $activeRepository
     )
     {
         $this->servicesRepository = $servicesRepository;
         $this->materielsRepository = $materielsRepository;
         $this->encaissementRepository = $encaissementRepository;
         $this->personnelRepository = $personnelRepository;
+        $this->activeRepository = $activeRepository;
     }
 
     public function payement() : View
@@ -45,6 +49,8 @@ class PayementController extends Controller
         $recette = $this->encaissementRepository->getRecetteToDay();
         $personnel = $this->personnelRepository->getAll();
         $credit = $this->encaissementRepository->getResteToDay();
+
+        $btnStart = $this->activeRepository->activeBtnDay();
         // dd($dataPayement);
         return view('caisse.payement', 
                 [

@@ -7,7 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>GCybert</title>
+    <!-- favicon
+		============================================ -->
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset ('assets/images/cyberHub.ico')}}">
+    <title>cyberHub | @yield('title')</title>
     <meta name="description" content="">
     <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet"> -->
     <!-- Bootstrap CSS
@@ -90,18 +93,18 @@
 <body>
     @guest
     @else
+    
     <div class="header-top-area">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="logo-area">
-                        <!-- <a href="#"><img src="img/logo/logo.png" alt="" /></a> -->
+                        <a href="#"><img src="{{asset('assets/images/CYBERHUB.png')}}" width="200px" height="48px" alt="cyberHub_logo" /></a>
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
                     <div class="header-top-menu">
                         <ul class="nav navbar-nav notika-top-nav">
-                            
 
                             <li class="nav-item">
                                 <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle">
@@ -175,6 +178,7 @@
 
 
     <script src="{{ asset ('assets/js/vendor/jquery-1.12.4.min.js')}}"></script>
+    <script src="{{ asset ('assets/plugins/jquery-ui/jquery-ui.js')}} "></script>
     <!-- bootstrap JS
 		============================================ -->
     <script src="{{ asset ('assets/js/bootstrap.min.js')}}"></script>

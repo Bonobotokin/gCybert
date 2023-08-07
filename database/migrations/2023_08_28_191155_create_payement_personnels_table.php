@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::create('payement_personnels', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Personnel::class)->constrained();
+            $table->foreignIdFor(Personnel::class)->constrained()
+            ->onDelete('CASCADE');
             $table->double('payement', 10,2)->default(0);
             $table->double('reste', 10,2)->default(0);
             $table->string('observation');
             $table->integer('etat')->default(0);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained()
+            ->onDelete('CASCADE');
             $table->timestamps();
         });
     }

@@ -13,8 +13,8 @@ class StockMateriels extends Model
 
     protected $fillable = [
         'materiels_id',
-        'quantite'
-    ];
+        'quantite',
+2    ];
 
 
     public function materiels() : BelongsTo
