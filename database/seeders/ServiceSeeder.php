@@ -18,7 +18,7 @@ class ServiceSeeder extends Seeder
 
         $service = [
             'designation' => 'connexion',
-            'prix' => 50,
+            'prix' => 30,
             'user_id' => 1
 
         ];

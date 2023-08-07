@@ -17,9 +17,9 @@ class UserSeeder extends Seeder
         DB::table('users')->delete();
 
         $users = [
-            'name' => 'TSANGAMILA Tokin',
-            'email' => 'tokin@gmail.com',
-            'password' => bcrypt('23@tokin.DEV')
+            'name' => 'Ny Avo',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('admin1234')
         ];
 
         User::insert($users);
