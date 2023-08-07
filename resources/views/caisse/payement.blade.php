@@ -90,10 +90,12 @@
                                 <button class="btn notika-btn-lightgreen waves-effect">Payer mais avec reste</button>
                                 @elseif ($data['etat'] == 4)
                                 <button class="btn notika-btn-lightgreen waves-effect">Payer</button>
+                                @elseif ($data['etat'] == 5)
+                                <button class="btn notika-btn-green waves-effect">Fermeture</button>
                                 @endif
                             </td>
                             <td class="material-design-btn">
-                                @if ($data['etat'] == 0 || $data['etat'] == 3 || $data['etat'] == 4)
+                                @if ($data['etat'] == 0 || $data['etat'] == 3 || $data['etat'] == 4 || $data['etat'] == 5)
                                 <button class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
 
                                 @else

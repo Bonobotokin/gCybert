@@ -93,6 +93,7 @@
 <body>
     @guest
     @else
+    
     <div class="header-top-area">
         <div class="container">
             <div class="row">

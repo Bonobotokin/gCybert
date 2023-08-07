@@ -15,19 +15,29 @@ class PersonnelRepository implements PersonnelRepositoryInterfaces
         $data = Personnel::with('user')
             ->get()
             ->map(function ($data) {
+                
                 return [
                     'id' => $data->id,
                     'nom' => $data->nom,
                     'sexe' => $data->sexe_personneles,
-                    'telephone' => is_null($data->telephone) ? "Pas de numero enregistrer" :  $data->telephone,
+                    'age' => $data->age,
+                    'telephone' => is_null($data->telephone) ? "Pas de numero enregistrer" :$data->telephone,
                     'adresse' => $data->adresse,
-                    'salaire_base' => $data->salaire_base
+                    'cin' => $data->cin,
+                    'salaire_base' => $data->salaire_base,
+                    'nom_user' => $data->user->name,
+                    'email' => $data->user->email,
+                    'password' => $data->user->password,
+                    'role' => $data->user->role,
                 ];
             });
 
         return $data;
     }
 
+
+
+    
     public function getSalaire($id)
     {
         $data = Personnel::where('id', $id)->get();

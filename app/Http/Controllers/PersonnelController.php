@@ -49,9 +49,35 @@ class PersonnelController extends Controller
         }
     }
 
+    public function updatePersonnel(Request $request, $id, PersonnelAction $action): RedirectResponse
+    {
+        $response =  $action->updatePersonnel($request, $id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('personnel.liste', ['reponse' => $response])->with('success', $response['message']);
+        } else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
     public function storePersonnel(StorePersonnelRequest $request, PersonnelAction $action): RedirectResponse
     {
         $response =  $action->savePersonnel($request);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('personnel.liste', ['reponse' => $response])->with('success', $response['message']);
+        } else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
+    public function deletePersonnel($id, PersonnelAction $action): RedirectResponse
+    {
+        $response =  $action->deletePersonnel($id);
         // dd($response);
         if (!is_null($response['data'])) {
             // dd($response, 'receptionisteController');exit;
@@ -93,7 +119,7 @@ class PersonnelController extends Controller
     }
 
 
-    public function validatePayement(Request $request, PersonnelAction $action) : RedirectResponse
+    public function validatePayement(Request $request, PersonnelAction $action): RedirectResponse
     {
         $response =  $action->personnelPayementValidate($request);
         // dd($response);
@@ -105,5 +131,4 @@ class PersonnelController extends Controller
             return redirect()->back()->withErrors($response)->withInput();
         }
     }
-
 }

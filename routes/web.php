@@ -100,6 +100,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/Rh/savePersonnel', [PersonnelController::class, 'storePersonnel'])->name('personnel.save');
     Route::post('/Rh/savePayementPersonnel', [PersonnelController::class, 'payementStorePersonnel'])->name('payement.personnel');
     Route::post('/Rh/payementValidate', [PersonnelController::class, 'validatePayement'])->name('payement.validate');
+    Route::put('/Rh/listePersonnel/update/{id}', [PersonnelController::class, 'updatePersonnel'])->name('personnel.update');
+    Route::delete('/Rh/listePersonnel/update/{id}', [PersonnelController::class, 'deletePersonnel'])->name('personnel.delete');
 
 
 });

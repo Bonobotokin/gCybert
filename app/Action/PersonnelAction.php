@@ -57,11 +57,14 @@ class PersonnelAction
 
     public function saveUser($data)
     {
+
         $user = User::create([
             'name'  => $data->name,
             'email'  => $data->email,
-            'password' => $data->mdp
+            'password' => $data->mdp,
+            'role' => $data->role
         ]);
+        // dd($user);
 
         return $user->id;
     }
@@ -114,8 +117,8 @@ class PersonnelAction
 
                 else {
                     $calculeppp = $salaireReel - $payement;
-                   
-                    
+
+
                     $payement = PayementPersonnel::Create([
                         'personnel_id' =>  $idPersonnel,
                         'payement' => $payement,
@@ -126,7 +129,7 @@ class PersonnelAction
                     ]);
 
                     // dd("Reglement de ".$personneleNom."; OBS: ".$payement->observation);
-                   
+
 
                     return [
                         'data' => true,
@@ -142,21 +145,21 @@ class PersonnelAction
         }
     }
 
-    public function personnelPayementValidate ($request)
+    public function personnelPayementValidate($request)
     {
         try {
-            
+
             $data = DB::transaction(function () use ($request) {
-                
+
                 $updatePayement = PayementPersonnel::find((int) $request->id)->get();
-                
-                foreach($updatePayement as $data){
+
+                foreach ($updatePayement as $data) {
 
                     $data->etat = 1;
                     $data->save();
                 }
 
-                
+
                 $idPersonnel = $updatePayement[0]['personnel_id'];
                 $salaire = $this->personnelRepository->getSalaire($idPersonnel);
                 $personneleNom = $salaire[0]['nom'];
@@ -164,31 +167,96 @@ class PersonnelAction
                 $userConnected = Auth::user()->id;
 
                 $decaissement = Decaissement::create([
-                    'description' => "Reglement de ".$personneleNom."; OBS: ".$updatePayement[0]['observation'],
+                    'description' => "Reglement de " . $personneleNom . "; OBS: " . $updatePayement[0]['observation'],
                     'payement_personnel_id' => $request->id,
                     'montant'  => $updatePayement[0]['payement'],
                     'user_id' => $userConnected
                 ]);
 
-                
+
 
                 $caisse = Caisse::create([
                     'decaissement_id' => $decaissement->id,
-                    'solde' => - (float) $decaissement->montant
+                    'solde' => -(float) $decaissement->montant
                 ]);
 
                 return [
                     'data' => true,
                     'message' => "Le payement de $personneleNom a etatit bien effectuer"
                 ];
-
             });
 
 
             return $data;
-
         } catch (\Throwable $th) {
             return $th;
+        }
+    }
+
+
+
+    public function updatePersonnel($request, $id)
+    {
+
+        try {
+            //code...
+
+            $data = DB::transaction(function () use ($request, $id) {
+
+                $personnel = Personnel::findOrFail($id);
+                $personnel->nom = $request->nom;
+                $personnel->sexe_personneles = $request->sexe;
+                
+                $personnel->age = $request->age;
+                
+                $personnel->salaire_base = $request->salaire;
+                
+                $personnel->telephone = $request->telephone;
+                
+                $personnel->adresse = $request->adresse;
+                $personnel->cin = $request->cin;
+                $personnel->save();
+
+                $user_id = $personnel->user_id;
+                
+                $user = User::findOrFail($user_id);
+                $user->name = $request->name;
+                $user->save();
+
+                return [
+                    'data' => true,
+                    'message' => "Mises a jour resussit"
+                ];
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function deletePersonnel($id)
+    {
+
+        try {
+            //code...
+
+            $data = DB::transaction(function () use ($id) {
+
+                $personnel = Personnel::findOrFail($id);
+                
+                $user = User::where('id', $personnel['user_id'])->delete();
+                $personnel->delete();
+
+                return [
+                    'data' => true,
+                    'message' => "Suppresssion resussit"
+                ];
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 }
