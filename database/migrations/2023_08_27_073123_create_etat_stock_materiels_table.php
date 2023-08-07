@@ -17,8 +17,10 @@ return new class extends Migration
     {
         Schema::create('etat_stock_materiels', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(StockMateriels::class)->constrained();
-            $table->foreignIdFor(facture::class)->nullable()->constrained();
+            $table->foreignIdFor(StockMateriels::class)->constrained()
+                ->onDelete('CASCADE');
+            $table->foreignIdFor(facture::class)->nullable()->constrained()
+                ->onDelete('CASCADE');
             $table->integer('quantite')->default(0);
             $table->string('observation');
             $table->timestamps();

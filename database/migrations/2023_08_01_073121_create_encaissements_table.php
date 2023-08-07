@@ -24,10 +24,11 @@ return new class extends Migration
             // $table->foreignIdFor(Service::class)->nullable()->constrained();
             // // $table->foreignIdFor(Materiels::class)->nullable()->constrained();
             // $table->integer('quantite')->nullable();
-            $table->double('montant', 10,2)->default(0.00);
-            $table->double('payer', 10,2)->default(0.00);
-            $table->double('reste', 10,2)->default(0.00);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->double('montant', 10, 2)->default(0.00);
+            $table->double('payer', 10, 2)->default(0.00);
+            $table->double('reste', 10, 2)->default(0.00);
+            $table->foreignIdFor(User::class)->constrained()
+                ->onDelete('CASCADE');
             $table->date('date')->nullable();
             // $table->string('client')->nullable();
             $table->integer('ispayed')->default(false);

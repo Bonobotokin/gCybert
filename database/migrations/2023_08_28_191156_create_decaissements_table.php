@@ -17,11 +17,14 @@ return new class extends Migration
         Schema::create('decaissements', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->foreignIdFor(Materiels::class)->nullable()->constrained();
-            $table->foreignIdFor(PayementPersonnel::class)->nullable()->constrained();
+            $table->foreignIdFor(Materiels::class)->nullable()->constrained()
+                ->onDelete('CASCADE');
+            $table->foreignIdFor(PayementPersonnel::class)->nullable()->constrained()
+                ->onDelete('CASCADE');
             $table->integer('quantite')->default(0);
-            $table->double('montant',10,2)->default(0.00);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->double('montant', 10, 2)->default(0.00);
+            $table->foreignIdFor(User::class)->constrained()
+                ->onDelete('CASCADE');
             $table->timestamps();
         });
     }

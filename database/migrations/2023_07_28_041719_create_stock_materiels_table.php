@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('stock_materiels', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Materiels::class)->constrained();
+            $table->foreignIdFor(Materiels::class)->constrained()
+                ->onDelete('CASCADE');
             $table->integer('quantite');
             $table->timestamps();
         });

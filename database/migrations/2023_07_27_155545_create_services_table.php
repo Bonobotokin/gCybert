@@ -16,15 +16,19 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('designation');
-            $table->foreignIdFor(Materiels::class)->nullable()->constrained();
+            $table->foreignIdFor(Materiels::class)
+                ->nullable()
+                ->constrained()
+                ->onDelete('CASCADE');
             // $table->unsignedBigInteger('materiels_id_1')->nullable();
             // $table->foreign('materiels_id_1')
             //     ->references('id')->on('Materiels');
             // $table->unsignedBigInteger('materiels_id_2')->nullable();
             // $table->foreign('materiels_id_2')
-                // ->references('id')->on('Materiels');
+            // ->references('id')->on('Materiels');
             $table->double('prix', 10, 2)->default(0.00);
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained()
+                ->onDelete('CASCADE');
             $table->timestamps();
         });
     }
