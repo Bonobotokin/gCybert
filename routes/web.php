@@ -53,6 +53,9 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/parametres/saveNewServices', [ServicesController::class, 'store'])->name('save.service');
 
     Route::post('/parametres/saveNewMateriel', [MaterielsController::class, 'store'])->name('save.materiels');
+    Route::put('/parametres/updateMateriel/{id}', [MaterielsController::class, 'update'])->name('update.materiels');
+    Route::delete('/parametres/deleteMateriel/{id}', [MaterielsController::class, 'destroy'])->name('delete.materiels');
+
 
     Route::get('/parametres/caisses', [ParametresController::class, 'caisses'])->name('parametres.caisse');
     Route::post('/parametre/saveDefaultCaisse', [CaissesController::class, 'store'])->name('save.default.caisse');

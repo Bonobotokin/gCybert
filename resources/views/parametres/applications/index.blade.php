@@ -42,6 +42,17 @@ Parametres
                 <option value="{{$datamateriels['designation']}}">{{$datamateriels['designation']}}</option>
                 @endforeach
             </select>
+             <select style="display:none" name="" id="listeMateriels">
+                @foreach ($materiels as $datamateriels)
+                <option value="{{$datamateriels['designation']}}">{{$datamateriels['designation']}}</option>
+                @endforeach
+            </select>
+
+            <select style="display:none" name="" id="materielsCd">
+                @foreach ($materiels as $datamateriels)
+                <option value="{{$datamateriels['conditionnement']}}">{{$datamateriels['conditionnement']}}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 </div>
@@ -132,7 +143,7 @@ Parametres
         </div>
     </div>
 </div>
-
+<!-- New Materiels -->
 <div class="modal fade" id="newMateriels" role="dialog">
     <div class="modal-dialog modal-large">
         <div class="modal-content">
@@ -166,7 +177,7 @@ Parametres
                                     <i class="notika-icon notika-star"></i>
                                 </div>
                                 <div class="nk-int-st">
-                                    <input type="text" name="conditionnement" class="form-control  @error('conditionnement') is-invalid @enderror" :value="{{ old('conditionnement') }}" placeholder="conditionnement">
+                                    <input type="text" id="inputMaterielsCondit" name="conditionnement" class="form-control  @error('conditionnement') is-invalid @enderror" :value="{{ old('conditionnement') }}" placeholder="conditionnement">
                                     @error('conditionnement')
                                     <span class="invalid-feedback" role="alert">
                                         <code>{{ $message }}</code>
@@ -227,6 +238,8 @@ Parametres
         </div>
     </div>
 </div>
+
+
 @endsection
 
 @section('script')
@@ -395,10 +408,12 @@ Parametres
 
     var tableauValeurs = [];
     var tableauxMateriels = [];
+    var tableauxmaterielsCd = [];
 
     // Récupérer le sélecteur HTML
     var selectElement = document.getElementById("listeService");
     var selectElementMateriels = document.getElementById("listeMateriels");
+    var selectElementmaterielsCd = document.getElementById("materielsCd");
 
 
     // Parcourir les options et ajouter les valeurs au tableau
@@ -409,12 +424,18 @@ Parametres
     for (var j = 0; j < selectElementMateriels.options.length; j++) {
         tableauxMateriels.push(selectElementMateriels.options[j].value);
     }
+    
+    for (var h = 0; h < selectElementmaterielsCd.options.length; h++) {
+        tableauxmaterielsCd.push(selectElementmaterielsCd.options[h].value);
+    }
 
     var service = tableauValeurs;
     var materiels = tableauxMateriels;
+    var materielsCondit = tableauxmaterielsCd;
 
     /*initiate the autocomplete function on the "inputService" element, and pass along the countries array as possible autocomplete values:*/
     autocomplete(document.getElementById("inputService"), service);
     autocomplete(document.getElementById("inputMateriels"), materiels);
+    autocomplete(document.getElementById("inputMaterielsCondit"), materielsCondit);
 </script>
 @endsection
