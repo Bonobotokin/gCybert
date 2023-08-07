@@ -1,3 +1,7 @@
+@php
+$user = auth()->user();
+$userRole = auth()->user()->role;
+@endphp
 <div class="main-menu-area mg-tb-20">
     <div class="container">
         <div class="row">
@@ -5,6 +9,10 @@
                 <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
                     <li id="homes"><a href="{{ route('dashboard') }}"><i class="notika-icon notika-house"></i>tableaux de bord</a>
                     </li>
+                    @if ($userRole != 0)
+                    <li id="Caisses"><a data-toggle="tab" href="#Caisse"><i class="notika-icon notika-edit"></i>Caisse</a>
+                    </li>
+                    @else
                     <li id="Caisses"><a data-toggle="tab" href="#Caisse"><i class="notika-icon notika-edit"></i>Caisse</a>
                     </li>
                     <li id="Ressources"><a data-toggle="tab" href="#RH"><i class="notika-icon notika-support"></i>Ressources hummaine</a>
@@ -13,11 +21,18 @@
                     </li>
                     <li id="Settings"><a data-toggle="tab" href="#Parametres"><i class="notika-icon notika-settings"></i> Parametres</a>
                     </li>
+                    @endif
                 </ul>
                 <div class="tab-content custom-menu-content">
 
                     <div id="Caisse" class="tab-pane notika-tab-menu-bg animated flipInX">
                         <ul class="notika-main-menu-dropdown">
+                            @if ($userRole != 0)
+
+                            <li><a href="{{route('payement')}}">Payement</a>
+                            </li>
+                            </li>
+                            @else
                             <li><a href="{{route('payement')}}">Payement</a>
                             </li>
                             <li><a href="{{route('encaissement')}}">Encaissement</a>
@@ -25,7 +40,7 @@
                             <li><a href="{{route('decaissement')}}">Decaissement</a>
                             </li>
                             <li><a href="{{route('livreCaisse')}}">Livres de caisse</a>
-                            </li>
+                                @endif
                         </ul>
                     </div>
                     <div id="RH" class="tab-pane notika-tab-menu-bg animated flipInX">

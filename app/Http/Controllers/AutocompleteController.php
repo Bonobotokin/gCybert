@@ -2,18 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
+use App\Repository\SearchDataInputRepository;
 use Illuminate\Http\Request;
 
 class AutocompleteController extends Controller
 {
     //
 
-    public function search(Request $request)
+    // private $searchDataInputRepository;
+
+    // public function __construct(
+    //     SearchDataInputRepository $searchDataInputRepository
+    // )
+    // {
+    //     $this->searchDataInputRepository = $searchDataInputRepository;   
+    // }
+
+
+
+    public function searchDataService(Request $request)
     {
-        $term = $request->input('term');
-        $results = YourModel::where('name', 'LIKE', '%'.$term.'%')->pluck('name');
+        $designation = $request->designation;
 
-        return response()->json($results);
+        $data = Service::where('designation', 'LIKE', '%' . $designation . '%')->pluck('designation');
+
+        $results = [];
+        foreach ($data as $designation) {
+            $results[] = ['label' => $designation, 'value' => $designation];
+        }
+
+        return $results;
     }
-
 }

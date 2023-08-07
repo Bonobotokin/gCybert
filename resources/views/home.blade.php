@@ -5,14 +5,6 @@
 <link rel="stylesheet" href="{{ asset ('assets/css/jquery.dataTables.min.css')}}">
 @endsection
 @section('content')
-@if (session('status'))
-<div class="alertDanger">
-    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-    <strong>Danger!</strong> Erreur.
-
-    {{ session('status') }}
-</div>
-@endif
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="alert-list">
@@ -25,6 +17,12 @@
         </div>
     </div>
 </div>
+
+@php
+$user = auth()->user();
+$userRole = auth()->user()->role;
+@endphp
+@if ($userRole == 0)
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mg-t-10">
         <div class="data-table-list">
@@ -210,6 +208,59 @@
         </div>
     </div>
 </div>
+@endif
+
+@if ($userRole == 1)
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+        <div class="recent-items-wp notika-shadow sm-res-mg-t-30">
+            <div class="rc-it-ltd">
+                <div class="recent-items-ctn">
+                    <div class="recent-items-title">
+                        <h2>Dernier Action dans l'encaissement</h2>
+                    </div>
+                </div>
+                <div class="recent-items-inn table-responsive">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Montant</th>
+                                <th>Reste</th>
+                                <th style="width: 60px">Etat</th>
+                                <th>Personnel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($yesterDayEncaissement as $key => $data)
+                            <tr>
+                                <td class="f-500 c-cyan">{{ $data['description'] }}</td>
+                                <td>{{ $data['montant'] }}Ar</td>
+                                <td class="f-500 c-cyan">{{ $data['montant'] }}Ar</td>
+                                <td class="material-design-btn ">
+                                    @if ($data['etat'] == " " || $data['etat'] == 0)
+                                    <button class="btn notika-btn-deeporange waves-effect">Ouverture</button>
+                                    @elseif ($data['etat'] == 1)
+                                    <button class="btn notika-btn-red waves-effect">Non payer</button>
+                                    @elseif ($data['etat'] == 2)
+                                    <button class="btn notika-btn-purple waves-effect">Reste non payer</button>
+                                    @elseif ($data['etat'] == 3)
+                                    <button class="btn notika-btn-lightgreen waves-effect">Payer mais avec reste</button>
+                                    @elseif ($data['etat'] == 4)
+                                    <button class="btn notika-btn-lightgreen waves-effect">Payer</button>
+                                    @endif
+                                </td>
+                                <td class="f-500 c-cyan">{{ $data['salarier'] }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @section('script')

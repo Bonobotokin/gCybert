@@ -201,7 +201,7 @@
                     <br>
                     <div class="row">
 
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <div class="form-group ic-cmp-int">
                                 <div class="form-ic-cmp">
                                     <i class="notika-icon notika-support"></i>
@@ -216,7 +216,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <div class="form-group ic-cmp-int">
                                 <div class="form-ic-cmp">
                                     <i class="notika-icon notika-support"></i>
@@ -231,7 +231,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <div class="form-group ic-cmp-int">
                                 <div class="form-ic-cmp">
                                     <i class="notika-icon notika-support"></i>
@@ -243,6 +243,20 @@
                                         <code>{{ $message }}</code>
                                     </span>
                                     @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group ic-cmp-int">
+                                <div class="form-ic-cmp">
+                                    <i class="notika-icon notika-support"></i>
+                                </div>
+                                <div class="nk-int-st">
+                                    <select name="role" class="form-control" id="">
+                                        <option value=""> Role</option>
+                                        <option value="0">Admin</option>
+                                        <option value="1">Moderateur</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
