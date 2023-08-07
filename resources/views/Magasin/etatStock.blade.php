@@ -25,7 +25,6 @@
                         <th> Conditionnement </th>
                         <th> Quantite </th>
                         <th> Observation </th>
-                        <th class="text-center"> Action </th>
                     </tr>
                 </thead>
 

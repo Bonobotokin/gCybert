@@ -46,11 +46,16 @@ require __DIR__ . '/auth.php';
  * */
 
 Route::middleware(['auth', 'isAdmin'])->group(function () {
+
+
     Route::get('/parametres/personnel', [ParametresController::class, 'personnel'])->name('parametres.personnel');
     Route::post('/parametres/savePersonnel', [PersonnelController::class, 'store'])->name('save.personnel');
 
     Route::get('/parametres/applications', [ParametresController::class, 'applications'])->name('parametres.application');
+
     Route::post('/parametres/saveNewServices', [ServicesController::class, 'store'])->name('save.service');
+    Route::put('/parametres/updateService/{id}', [ServicesController::class, 'update'])->name('update.service');
+    Route::delete('/parametres/updateService/{id}', [ServicesController::class, 'delete'])->name('delete.service');
 
     Route::post('/parametres/saveNewMateriel', [MaterielsController::class, 'store'])->name('save.materiels');
     Route::put('/parametres/updateMateriel/{id}', [MaterielsController::class, 'update'])->name('update.materiels');
@@ -78,6 +83,9 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
      * */
 
     Route::get('/Magasin/stock', [MaterielsController::class, 'stock'])->name('stock');
+
+    Route::put('/Magasin/stock/{id}', [MaterielsController::class, 'approvisionnement'])->name('approvisionnement');
+
     Route::get('/Magasin/etat_stock', [MaterielsController::class, 'etatStock'])->name('etatStock');
 
 

@@ -27,8 +27,7 @@ return new class extends Migration
             // $table->foreign('materiels_id_2')
             // ->references('id')->on('Materiels');
             $table->double('prix', 10, 2)->default(0.00);
-            $table->foreignIdFor(User::class)->constrained()
-                ->onDelete('CASCADE');
+            $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();
         });
     }

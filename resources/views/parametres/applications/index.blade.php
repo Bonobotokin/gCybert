@@ -42,11 +42,6 @@ Parametres
                 <option value="{{$datamateriels['designation']}}">{{$datamateriels['designation']}}</option>
                 @endforeach
             </select>
-             <select style="display:none" name="" id="listeMateriels">
-                @foreach ($materiels as $datamateriels)
-                <option value="{{$datamateriels['designation']}}">{{$datamateriels['designation']}}</option>
-                @endforeach
-            </select>
 
             <select style="display:none" name="" id="materielsCd">
                 @foreach ($materiels as $datamateriels)
@@ -407,13 +402,13 @@ Parametres
     /*An array containing all the country names in the world:*/
 
     var tableauValeurs = [];
-    var tableauxMateriels = [];
-    var tableauxmaterielsCd = [];
+    // var tableauxMateriels = [];
+    // var tableauxmaterielsCd = [];
 
-    // Récupérer le sélecteur HTML
+    // // Récupérer le sélecteur HTML
     var selectElement = document.getElementById("listeService");
-    var selectElementMateriels = document.getElementById("listeMateriels");
-    var selectElementmaterielsCd = document.getElementById("materielsCd");
+    // var selectElementMateriels = document.getElementById("listeMateriels");
+    // var selectElementmaterielsCd = document.getElementById("materielsCd");
 
 
     // Parcourir les options et ajouter les valeurs au tableau
@@ -421,21 +416,21 @@ Parametres
         tableauValeurs.push(selectElement.options[i].value);
     }
 
-    for (var j = 0; j < selectElementMateriels.options.length; j++) {
-        tableauxMateriels.push(selectElementMateriels.options[j].value);
-    }
+    // for (var j = 0; j < selectElementMateriels.options.length; j++) {
+    //     tableauxMateriels.push(selectElementMateriels.options[j].value);
+    // }
     
-    for (var h = 0; h < selectElementmaterielsCd.options.length; h++) {
-        tableauxmaterielsCd.push(selectElementmaterielsCd.options[h].value);
-    }
+    // for (var h = 0; h < selectElementmaterielsCd.options.length; h++) {
+    //     tableauxmaterielsCd.push(selectElementmaterielsCd.options[h].value);
+    // }
 
     var service = tableauValeurs;
-    var materiels = tableauxMateriels;
-    var materielsCondit = tableauxmaterielsCd;
+    // var materiels = tableauxMateriels;
+    // var materielsCondit = tableauxmaterielsCd;
 
     /*initiate the autocomplete function on the "inputService" element, and pass along the countries array as possible autocomplete values:*/
     autocomplete(document.getElementById("inputService"), service);
-    autocomplete(document.getElementById("inputMateriels"), materiels);
-    autocomplete(document.getElementById("inputMaterielsCondit"), materielsCondit);
+    // autocomplete(document.getElementById("inputMateriels"), materiels);
+    // autocomplete(document.getElementById("inputMaterielsCondit"), materielsCondit);
 </script>
 @endsection

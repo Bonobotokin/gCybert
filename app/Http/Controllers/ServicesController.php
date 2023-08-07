@@ -26,4 +26,32 @@ class ServicesController extends Controller
             return redirect()->back()->withErrors($response)->withInput();
         }
     }
+
+    public function update(Request $request,$id ,ServicesAction $action) : RedirectResponse
+    {
+        $response =  $action->updateServices($request, $id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('parametres.application',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
+    public function delete($id ,ServicesAction $action) : RedirectResponse
+    {
+        $response =  $action->deleteService($id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('parametres.application',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
 }

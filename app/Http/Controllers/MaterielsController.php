@@ -92,4 +92,19 @@ class MaterielsController extends Controller
     }
 
 
+    public function approvisionnement(Request $request,$id ,MaterielsAction $action) : RedirectResponse
+    {
+        $response =  $action->approvisionnement($request, $id);
+        // dd($response);
+        if (!is_null($response['data'])) {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->route('stock',['reponse'=>$response])->with('success', $response['message']);
+
+        }else {
+            // dd($response, 'receptionisteController');exit;
+            return redirect()->back()->withErrors($response)->withInput();
+        }
+    }
+
+
 }
