@@ -20,7 +20,7 @@ return new class extends Migration
             $table->double('salaire_base', 10, 2)->default(0.00);
             $table->integer('telephone')->nullable();
             $table->string('adresse');
-            $table->integer('cin')->nullable();
+            $table->bigInteger('cin')->nullable();
             $table->foreignIdFor(User::class)->nullable()->constrained()
                 ->onDelete('CASCADE');
             $table->timestamps();

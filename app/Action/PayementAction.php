@@ -90,17 +90,23 @@ class PayementAction
                 $somme_montant = 0;
                 $id_facture = [];
                 $nombre = (int) $request->nombrePayement;
+                $translateDurerr = "";
                 for ($i = 0; $i < $nombre; $i++) {
                     $service = $request[$i]['service'];
 
                     if ($service == 1) {
 
                         $minute = $request[$i]['quantite'];
-                        // dd($minute);
+                      
                         $translateDurerr = $this->detecterHeuresMinutes($minute);
                         
                         $montantDefault = $this->getMontant($service);
                         $montantPayement = $minute * $montantDefault;
+                        // dd($montantPayement);
+                        if ($minute <= 500) {
+                            # code...
+                            $montantPayement = 500;
+                        }
                         $deuxDerniersChiffres = $montantPayement % 100;
                         if ($deuxDerniersChiffres >= 50) {
                             // Arrondir le montant au multiple de 100 supérieur le plus proche
@@ -166,8 +172,8 @@ class PayementAction
                 $ids_concatenated = implode(',', $id_facture);
                 $id = $id_facture;
 
-
-
+                // dd($translateDurerr);
+                
                 $encaissement = Encaissement::Create([
                     'description' => is_null($request->client) ? "Payement de " . $descriptionEntrant->designation . (is_null($translateDurerr) ? " " : " " . $translateDurerr) : "Payement de facture de " . $request->client,
                 
