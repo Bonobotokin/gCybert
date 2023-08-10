@@ -43,9 +43,18 @@ class CaisseRepository implements CaisseRepositoryInterfaces
 
     public function getSumEncaissement()
     {
-        $encaissement = Encaissement::sum('montant');
+        $encaissement = Encaissement::where(function($query) {
+            $query->where('ispayed', 4)
+            ->orWhere('ispayed', 0)
+                  ->orWhere('ispayed', 3);
+        })->sum('montant');
 
-        return $encaissement;
+        $encaissementReste = Encaissement::where(function($query) {
+            $query->where('ispayed', 3);
+        })->sum('reste');
+        // dd($encaissementReste);
+        $data = $encaissement - $encaissementReste;
+        return $data;
     }
 
     public function getSumDecaissement()
@@ -57,10 +66,9 @@ class CaisseRepository implements CaisseRepositoryInterfaces
 
     public function getSolde()
     {
-        $encaissement = Encaissement::sum('montant');
-        $decaissment = Decaissement::sum('montant');
+        $solde = Caisse::sum('solde');
 
-        $solde = $encaissement - $decaissment;
+        
 
         return $solde;
     }

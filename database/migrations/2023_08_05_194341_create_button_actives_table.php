@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->boolean('actif')->default(false);
+            $table->timestamps();
         });
     }
 

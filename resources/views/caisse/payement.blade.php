@@ -1,8 +1,13 @@
 @extends('layouts.app')
-
+@section('title')
+Payements
+@endsection
 @section('style')
 
 <link rel="stylesheet" href="{{ asset ('assets/css/jquery.dataTables.min.css')}}">
+
+<link rel="stylesheet" href="{{ asset ('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+<link rel="stylesheet" href="{{ asset ('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 @endsection
 @section('content')
 
@@ -16,22 +21,34 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="row">
+                            @foreach ($btnStart as $btn)
+                            @if ($btn['nom'] == 'StartBtnDay')
 
+                            @if ($btn['actif'] == 1)
                             <div class="col-lg-4">
                                 <button id="btnStart" type="button" class="btn btn-success waves-effect " data-toggle="modal" data-target="#debut">Debut de la journee</button>
                             </div>
+                            @else
+                            @endif
+                            @else
                             <div class="col-lg-4">
-                                <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayedMultiple">Payement</button>
-                            </div>
-                            <div class="col-lg-4">
+                                @if ($btn['actif'] == 1)
 
                                 <form action="{{route('finJourney')}}" method="POST">
                                     @csrf
+                                    
                                     <button type="submit" class="btn btn-danger waves-effect " data-toggle="modal" data-target="#fin">Fin de la journee</button>
                                 </form>
+                                @else
+                                @endif
+                            </div>
+                            @endif
+                            @endforeach
+                            <div class="col-lg-4">
+                                <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayedMultiple">Payement</button>
                             </div>
                             <!-- <button id="btnpayed" type="button" class="btn btn-info waves-effect " data-toggle="modal" data-target="#newPayed">Simple Payement </button> -->
-                            
+
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
@@ -70,7 +87,9 @@
                     </thead>
 
                     <tbody>
+
                         @foreach ($payementToday as $key => $data)
+
                         <tr>
                             <td> {{$data['heure']}} </td>
                             <td> {{ $data['salarier'] }}</td>
@@ -95,110 +114,64 @@
                                 @endif
                             </td>
                             <td class="material-design-btn">
-                                @if ($data['etat'] == 0 || $data['etat'] == 3 || $data['etat'] == 4 || $data['etat'] == 5)
-                                <button data-toggle="modal" data-target="#update_{{ $data['numero'] }}"  class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
+                                @if ($data['etat'] == 0)
+                                <button data-toggle="modal" data-target="#update_{{ $data['numero'] }}" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
+                                @elseif ($data['etat'] == 5)
 
-                                @else
+                                @elseif ($data['etat'] == 3 || $data['etat'] == 4 || $data['etat'] == 5)
+                                <button data-toggle="modal" data-target="#details_{{ $data['numero'] }}" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Details</button>
+                                 @else
                                 <button data-toggle="modal" data-target="#payed_{{ $data['numero'] }}" class="btn notika-btn-purple btn-reco-mg btn-button-mg waves-effect">Payer</button>
-                                <a type="button" href="{{ route('get.liste.facture', ['id' => $data['numero']]) }}" target="_blank" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</a>
+                                <a type="button" href="{{ route('get.details.facture', ['id' => $data['numero']]) }}" target="_blank" class="btn notika-btn-black btn-reco-mg btn-button-mg waves-effect">Detaills</a>
+                                <a type="button" href="{{ route('get.liste.facture', ['id' => $data['numero']]) }}" target="_blank" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modification</a>
 
                                 @endif
 
                             </td>
                         </tr>
+                        @include('caisse.modalUtils')
+                        @endforeach
+                        @foreach ($dateNotPayed as $key => $data)
 
-                        <div class="modal fade" id="payed_{{ $data['numero'] }}" role="dialog">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h5>Payement de la facture de {{ $data['client'] }}</h5>
-                                        <form class="form-sample" action="{{ route('payed.payement') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{$data['numero']}}">
-                                            <input type="hidden" name="client" value="{{$data['client']}}">
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group ic-cmp-int">
-                                                        <div class="form-ic-cmp">
-                                                            <!-- <i class="notika-icon notika-calculator"></i> -->
-                                                        </div>
-                                                        <div class="nk-int-st">
-                                                            <input type="text" id="montant" name="montant" class="form-control @error('montant') is-invalid @enderror" value="<?php if ($data['reste'] == 0.0) {
-                                                                                                                                                                                    echo $data['montant'];
-                                                                                                                                                                                } else {
-                                                                                                                                                                                    echo $data['reste'];
-                                                                                                                                                                                } ?>" placeholder="montant Payer" autocomplete="client" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <button type="reset" class="btn btn-danger btn-lg btn-block" data-dismiss="modal">
-                                                        <i class="mdi mdi-account-multiple-minus "></i>
-                                                        Annuler
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <button type="submit" class="btn btn-success btn-lg btn-block">
-                                                        <i class="mdi mdi-account-check "></i>
-                                                        Enregistrer
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <tr>
+                            <td> {{$data['heure']}} </td>
+                            <td> {{ $data['salarier'] }}</td>
+                            <td> {{ $data['description'] }} </td>
+                            <td> {{ $data['quantite'] }} </td>
+                            <td> {{ $data['montant'] }} Ar</td>
+                            <td> {{ $data['payer'] }} Ar</td>
+                            <td> {{ $data['reste'] }} Ar</td>
+                            <td class="material-design-btn">
+                                @if ($data['etat'] == " " || $data['etat'] == 0)
+                                <button class="btn notika-btn-deeporange waves-effect">Ouverture</button>
+                                @elseif ($data['etat'] == 1)
+                                <button class="btn notika-btn-red waves-effect">Non payer</button>
+                                @elseif ($data['etat'] == 2)
+                                <button class="btn notika-btn-purple waves-effect">Reste non payer</button>
+                                @elseif ($data['etat'] == 3)
+                                <button class="btn notika-btn-lightgreen waves-effect">Payer mais avec reste</button>
+                                @elseif ($data['etat'] == 4)
+                                <button class="btn notika-btn-lightgreen waves-effect">Payer</button>
+                                @elseif ($data['etat'] == 5)
+                                <button class="btn notika-btn-green waves-effect">Fermeture</button>
+                                @endif
+                            </td>
+                            <td class="material-design-btn">
+                                @if ($data['etat'] == 0)
+                                <button data-toggle="modal" data-target="#update_{{ $data['numero'] }}" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Modifier</button>
+                                @elseif ($data['etat'] == 5)
 
-                        <div class="modal fade" id="update_{{ $data['numero'] }}" role="dialog">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h5>Payement de la facture de {{ $data['client'] }}</h5>
-                                        <form class="form-sample" action="{{ route('update.payement', $data['numero'] ) }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="id" value="{{$data['numero']}}">
-                                            <input type="hidden" name="client" value="{{$data['client']}}">
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group ic-cmp-int">
-                                                        <div class="form-ic-cmp">
-                                                            <!-- <i class="notika-icon notika-calculator"></i> -->
-                                                        </div>
-                                                        <div class="nk-int-st">
-                                                            <input type="text" id="montant" name="montant" class="form-control" value="{{ $data['montant'] }}" placeholder="montant Payer" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <button type="reset" class="btn btn-danger btn-lg btn-block" data-dismiss="modal">
-                                                        <i class="mdi mdi-account-multiple-minus "></i>
-                                                        Annuler
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <button type="submit" class="btn btn-success btn-lg btn-block">
-                                                        <i class="mdi mdi-account-check "></i>
-                                                        Enregistrer
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                @elseif ($data['etat'] == 3 || $data['etat'] == 4 || $data['etat'] == 5)
+                                <button data-toggle="modal" data-target="#details_{{ $data['numero'] }}" class="btn notika-btn-indigo btn-reco-mg btn-button-mg waves-effect">Details</button>
+                                @else
+                                <button data-toggle="modal" data-target="#payed_{{ $data['numero'] }}" class="btn notika-btn-purple btn-reco-mg btn-button-mg waves-effect">Payer</button>
+                                <a type="button" href="{{ route('get.details.facture', ['id' => $data['numero']]) }}" target="_blank" class="btn notika-btn-black btn-reco-mg btn-button-mg waves-effect">Detaills</a>
+
+                                @endif
+
+                            </td>
+                        </tr>
+                        @include('caisse.modalUtils')
                         @endforeach
                     </tbody>
                 </table>
@@ -221,6 +194,9 @@
                 <h2>Debut de la journee</h2>
                 <form class="form-sample" action="{{ route('debutJourney') }}" method="POST">
                     @csrf
+
+                    
+                    <input type="hidden" name="btnActif" value="{{$btnStart[0]['id']}}">
                     <div class="row">
 
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -297,7 +273,7 @@
                                     <i class="notika-icon notika-calculator"></i>
                                 </div>
                                 <div class="nk-int-st">
-                                    <select name="personnels" id="" class="form-control">
+                                    <select name="personnels" id="" class="form-control" required>
                                         <option value=" ">personnels</option>
                                         @foreach ($liste as $data)
                                         <option value="{{$data['id']}}">{{ $data['nom'] }}</option>
@@ -428,10 +404,10 @@
 @section('script')
 
 <script src="{{ asset ('assets/js/chosen/chosen.jquery.js')}}"></script>
-<script src="{{ asset ('assets/js/data-table/jquery.dataTables.min.js')}}"></script>
-<script src="{{ asset ('assets/js/data-table/data-table-act.js')}}"></script>
 
-
+<!-- DataTables  & Plugins -->
+<script src="{{ asset ('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+<script src="{{ asset ('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
 <script src="{{ asset ('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
 <script src="{{ asset ('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{ asset ('assets/plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
@@ -444,15 +420,25 @@
 <script src="{{ asset ('assets/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 <script>
     $(function() {
+        // $("#example1").DataTable({
+        //     "responsive": true,
+        //     "lengthChange": true,
+        //     "autoWidth": true,
+        //     "order": [
+        //         [1, "desc"]
+        //     ],
+        //     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        // }).buttons().container().appendTo('#example1_wrapper .col-md4:eq(0)');
+
         $("#example1").DataTable({
             "responsive": true,
-            "lengthChange": true,
-            "autoWidth": true,
+            "lengthChange": false,
+            "autoWidth": false,
             "order": [
                 [1, "desc"]
             ],
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md4:eq(0)');
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 </script>
 <script>

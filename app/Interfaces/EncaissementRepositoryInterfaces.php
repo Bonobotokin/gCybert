@@ -7,6 +7,7 @@ interface EncaissementRepositoryInterfaces
 
     public function getDefault();   
     public function getAllToDay();
+    public function getAllNotPayed();
     public function getRecetteToDay();
     public function getSumEncaissement();
     public function getResteToDay();
@@ -16,5 +17,10 @@ interface EncaissementRepositoryInterfaces
 
     public function getListeFacture($id);
     public function factureById($id);
+
+    public function getDetailsFacture($id);
+    public function getDetailsFactureTotalEncaissement($id);
+
+    public function allFacture();
 
 }

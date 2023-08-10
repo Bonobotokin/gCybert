@@ -35,6 +35,8 @@ $userRole = auth()->user()->role;
                             @else
                             <li><a href="{{route('payement')}}">Payement</a>
                             </li>
+                            <!-- <li><a href="{{route('facture.liste')}}">Factures</a>
+                            </li> -->
                             <li><a href="{{route('encaissement')}}">Encaissement</a>
                             </li>
                             <li><a href="{{route('decaissement')}}">Decaissement</a>

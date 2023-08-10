@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('title')
+Modification {{$factureById['client']}}
+@endsection
 @section('style')
 
 <link rel="stylesheet" href="{{ asset ('assets/css/jquery.dataTables.min.css')}}">
@@ -12,21 +14,12 @@
             <div class="basic-tb-hd">
                 <h2>Modification du facture</h2>
             </div>
-            <form class="form-sample" action="{{ route('save.payement.mutiple') }}" method="POST">
-                @csrf
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                        <div class="form-group ic-cmp-int">
-                            <div class="form-ic-cmp">
-                                <i class="notika-icon notika-calculator"></i>
-                            </div>
-                            <div class="nk-int-st">
-                                <input type="text" id="nombreFormulaire" class="form-control" value="" placeholder="nombre de facture " />
-                            </div>
-                        </div>
-                    </div>
+            <form class="form-sample" action="{{ route('update.payement', ['id' => $dataId]) }}" method="POST">
 
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                @csrf
+                @method('PUT')
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group ic-cmp-int">
                             <div class="form-ic-cmp">
                                 <i class="notika-icon notika-calculator"></i>
@@ -37,7 +30,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group ic-cmp-int">
                             <div class="form-ic-cmp">
                                 <i class="notika-icon notika-calculator"></i>
@@ -61,7 +54,8 @@
                 </div>
 
                 @foreach ($facture as $key => $datas)
-                <input type="hidden" name="nombrePayement" value="{{ $key }}">
+                <input type="hidden" name="nombrePayement" value="{{ $key }} ">
+                <input type="hidden" name="{{ $key }}[idFacture]" value="{{ $datas['id'] }}">
 
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group ic-cmp-int">
@@ -69,7 +63,7 @@
                             <!-- <i class="notika-icon notika-calculator"></i> -->
                         </div>
                         <div class="nk-int-st">
-                            <select class="form-control" name="{{ $key }}[service]">
+                            <select id="servicedata" class="form-control" name="{{ $key }}[service]" onchange="serviceValue();">
                                 <option value="">Service</option>
                                 @foreach ($service as $data)
                                 @if ($datas['service'] == $data['designation'])

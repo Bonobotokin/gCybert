@@ -217,7 +217,14 @@ class PersonnelAction
                 $personnel->adresse = $request->adresse;
                 $personnel->cin = $request->cin;
                 $personnel->save();
-
+                // dd($personnel->user_id, 'eto');
+                if(is_null($personnel->user_id))
+                {
+                return [
+                    'data' => true,
+                    'message' => "Mises a jour resussit"
+                ];
+                }
                 $user_id = $personnel->user_id;
                 
                 $user = User::findOrFail($user_id);

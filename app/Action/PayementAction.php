@@ -2,18 +2,19 @@
 
 namespace App\Action;
 
-use App\Models\Caisse;
-use App\Models\Encaissement;
-use App\Models\EtatStockMateriels;
-use App\Models\facture;
-use App\Models\Materiels;
-use App\Models\Payement;
-use App\Models\Service;
-use App\Models\StockMateriels;
-use App\Repository\CaisseRepository;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Caisse;
+use App\Models\facture;
+use App\Models\Service;
+use App\Models\Payement;
+use App\Models\Materiels;
+use App\Models\ButtonActive;
+use App\Models\Encaissement;
+use App\Models\StockMateriels;
+use App\Models\EtatStockMateriels;
 use Illuminate\Support\Facades\DB;
+use App\Repository\CaisseRepository;
+use Illuminate\Support\Facades\Auth;
 
 class PayementAction
 {
@@ -84,6 +85,14 @@ class PayementAction
         try {
 
             $data = DB::transaction(function () use ($request) {
+
+                if(is_null($request->personnels))
+                {
+                    return [
+                        'data' => null,
+                        'message' => "Delorer veuille renseigne le personnel"
+                    ];
+                }
 
                 $userConnected = Auth::user()->id;
 
@@ -167,12 +176,8 @@ class PayementAction
                     $id_facture[] = $facture->id;
                     $somme_montant += $facture->montant;
                 }
-
-
                 $ids_concatenated = implode(',', $id_facture);
                 $id = $id_facture;
-
-                // dd($translateDurerr);
 
                 $encaissement = Encaissement::Create([
                     'description' => is_null($request->client) ? "Payement de " . $descriptionEntrant->designation . (is_null($translateDurerr) ? " " : " " . $translateDurerr) : "Payement de facture de " . $request->client,
@@ -326,33 +331,143 @@ class PayementAction
 
 
                 $encaissements = Encaissement::findOrFail($id);
+
+
                 if (!is_null($encaissements->facture_id)) {
+
+                    $somme_montant = 0;
+                    $translateDurerr = null;
+                    $factures = facture::where('id', $request['idFacture'])->get();
+
+                    $factureId = explode(',', $encaissements->facture_id);
+
+
+
+                    $factures = facture::whereIn('id', explode(',', $encaissements->facture_id))->get();
+
+                    // dd(count($factures));
+                    for ($i = 0; $i < count($factures); $i++) {
+                        $service = $request[$i]['service'];
+
+                        if ($service == 1) {
+
+                            $minute = $request[$i]['quantite'];
+
+                            $translateDurerr = $this->detecterHeuresMinutes($minute);
+
+                            $montantDefault = $this->getMontant($service);
+                            $montantPayement = $minute * $montantDefault;
+                            // dd($montantPayement);
+                            if ($minute <= 500) {
+                                # code...
+                                $montantPayement = 500;
+                            }
+                            $deuxDerniersChiffres = $montantPayement % 100;
+                            if ($deuxDerniersChiffres >= 50) {
+                                // Arrondir le montant au multiple de 100 supérieur le plus proche
+                                $nombreArrondi = ceil($montantPayement / 100) * 100;
+                            } else {
+                                // Arrondir le montant au multiple de 100 inférieur le plus proche
+                                $nombreArrondi = floor($montantPayement / 100) * 100;
+                            }
+                            $descriptionEntrant = Service::find((int)$service);
+                            // dd($nombreArrondi,'connexiont');
+                            $facture = facture::findOrFail((int)$request[$i]['idFacture']);
+
+                            $facture->description = $descriptionEntrant->designation;
+                            $facture->service_id = $service;
+                            $facture->quantite = $minute;
+                            $facture->montant = $nombreArrondi;
+
+                            $facture->date = Carbon::today();
+                            $facture->client = $request->client;
+                            $facture->personnel_id = $request->personnels;
+                            $facture->save();
+                        } else {
+                            $quantite = $request[$i]['quantite'];
+
+                            $montantDefault = $this->getMontant($service);
+                            $montantPayement = $quantite * $montantDefault;
+
+
+                            // Extraire les deux derniers chiffres du nombre
+                            $deuxDerniersChiffres = $montantPayement % 100;
+
+
+                            if ($deuxDerniersChiffres >= 50) {
+                                // Arrondir le montant au multiple de 100 supérieur le plus proche
+                                $nombreArrondi = ceil($montantPayement / 100) * 100;
+                            } else {
+                                // Arrondir le montant au multiple de 100 inférieur le plus proche
+                                $nombreArrondi = floor($montantPayement / 100) * 100;
+                            }
+
+                            // dd($nombreArrondi,'pas connexiont');
+
+                            $descriptionEntrant = Service::find((int)$service);
+
+                            $facture = facture::findOrFail((int)$request[$i]['idFacture']);
+
+                            $facture->description = $descriptionEntrant->designation;
+                            $facture->service_id = $service;
+                            $facture->quantite = $quantite;
+                            $facture->montant = $nombreArrondi;
+
+                            $facture->date = Carbon::today();
+                            $facture->client = $request->client;
+                            $facture->personnel_id = $request->personnels;
+
+                            $facture->save();
+                        }
+
+                        $id_facture[] = $facture->id;
+                        $descriptionAll[] = $facture->description;
+                        $somme_montant += $facture->montant;
+                    }
+
+
+                    // dd($descriptionAll);
+
+
+                    $descriptionInfo = implode(' , ', $descriptionAll);
+                    $newDescription = " ";
+                    $newDescription =  is_null($request->client) ? " Payement de  " . $descriptionInfo :
+                        "Payement de " . $descriptionInfo . " de " . $request->client;
+
+
+
+
+                    $encaissements->description = $newDescription;
+                    $encaissements->montant = $somme_montant;
+                    $encaissements->date = Carbon::today();
+                    $encaissements->ispayed = 1;
+                    $encaissements->user_id = $userConnected;
+                    $encaissements->save();
+                    $caisse = Caisse::where('encaissement_id', $encaissements->id)->first();
+
+                    return [
+                        'data' => true,
+                        'message' => 'Votre mises a jour est bien reussit'
+                    ];
+                } else {
 
                     $encaissements->montant = $request->montant;
                     $encaissements->date = Carbon::today();
                     $encaissements->ispayed = 0;
                     $encaissements->user_id = $userConnected;
                     $encaissements->save();
-                    $factureId = $encaissements->facture_id;
-                    $facture = facture::whereIn('id', explode(',', $factureId))->get();
-                    dd($facture);
+
+                    $caisse = Caisse::where('encaissement_id', $encaissements->id)->first();
+
+                    $caisse->solde = $encaissements->montant;
+                    $caisse->save();
+
+
+                    return [
+                        'data' => true,
+                        'message' => 'Votre mises a jour est bien reussit'
+                    ];
                 }
-                $encaissements->montant = $request->montant;
-                $encaissements->date = Carbon::today();
-                $encaissements->ispayed = 0;
-                $encaissements->user_id = $userConnected;
-                $encaissements->save();
-
-                $caisse = Caisse::where('encaissement_id', $encaissements->id)->first();
-
-                $caisse->solde = $encaissements->montant;
-                $caisse->save();
-
-
-                return [
-                    'data' => true,
-                    'message' => 'Votre mises a jour est bien reussit'
-                ];
             });
 
             return $data;
@@ -362,6 +477,29 @@ class PayementAction
         }
     }
 
+
+    public function deleteData($id)
+    {
+        try {
+            $data = DB::transaction(function () use ($id) {
+
+                $encaissement = Encaissement::findOrFail($id);
+
+
+
+                $factures = facture::whereIn('id', explode(',', $encaissement->facture_id))->delete();
+                $encaissement->delete();
+                return [
+                    'data' => true,
+                    'message' => "Vous avez supprimer le payement de facture $encaissement->facture_id "
+                ];
+            });
+
+            return $data;
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
 
 
     public function stock($data, $description)
@@ -412,7 +550,7 @@ class PayementAction
         try {
             $data = DB::transaction(function () use ($request) {
                 $userConnected = Auth::user()->id;
-                // dd($request);
+
 
                 $encaissement = Encaissement::Create([
                     'facture_id' => null,
@@ -428,6 +566,16 @@ class PayementAction
                     'solde' => $encaissement->montant
                 ]);
 
+                $btnStart = ButtonActive::findOrFail((int) $request->btnActif);
+                
+                $btnStart->actif = 0;
+                $btnStart->save();
+                
+                $btnEnd = ButtonActive::findOrFail((int) 2);
+                $btnEnd->actif = 1;
+                $btnEnd->save();
+                
+                
 
                 return [
                     'data' => true,
@@ -438,6 +586,7 @@ class PayementAction
             return $data;
         } catch (\Throwable $th) {
             //throw $th;
+            return $th;
         }
     }
 
@@ -466,6 +615,16 @@ class PayementAction
                     'encaissement_id' => $endDay->id,
                     'solde' => 0
                 ]);
+
+
+                $btnStart = ButtonActive::findOrFail((int) 1);
+                
+                $btnStart->actif = 1;
+                $btnStart->save();
+                
+                $btnEnd = ButtonActive::findOrFail((int) 2);
+                $btnEnd->actif = 0;
+                $btnEnd->save();
 
                 return [
                     'data' => true,

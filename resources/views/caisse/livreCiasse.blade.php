@@ -46,7 +46,6 @@
                         <th> facture </th>
                         <th> Montant </th>
                         <th> Date </th>
-                        <th class="text-center"> Action </th>
                     </tr>
                 </thead>
                 <tbody>
