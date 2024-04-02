@@ -66,7 +66,7 @@ class ParametresController extends Controller
         return view(
             'parametres.caisses.index',
             [
-                'default' => is_null($defaultCaise)? " " : $defaultCaise
+                'default' => is_null($defaultCaise) ? " " : $defaultCaise
             ]
         );
     }
